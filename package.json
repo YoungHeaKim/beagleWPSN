@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/YoungHeaKim/beagleWPSN#readme",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "knex": "^0.13.0",
