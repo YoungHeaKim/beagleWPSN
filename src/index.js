@@ -1,10 +1,21 @@
 // 파일 불러오기
 const query = require('./query')
 
+const express = require('express')
+const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
 // passport 작성
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
 const NaverStrategy = require('passport-naver').Strategy
+const NaverStrategy = require('passport-naver').Strategy
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+// express
+const app = express()
+// 포트 설정
+const PORT = process.env.PORT || 3000
+
+app.use(bodyParser, json())
 
 // facebook
 passport.use(new FacebookStrategy({
@@ -42,12 +53,12 @@ passport.use(new NaverStrategy({
   clientSecret: process.env.NAVER_CLIENT_SECRET,
   callbackURL: process.env.NAVER_CALLBACK_URL
 }, (accessToken, refreshToken, profile, done) => {
-  const avatar_url = profile._json.profile_image ? profile._json.profile_image : null
+  const profile_photo = profile._json.profile_image ? profile._json.profile_image : null
   query.firstOrCreateUserByProvider(
     'naver',
     profile.id,
     accessToken,
-    avatar_url
+    profile_photo
   ).then(user => {
     done(null, user)
   }).catch(err => {
@@ -62,3 +73,44 @@ app.get('/auth/naver/callback', passport.authenticate('naver', {
   failureRedirect: '/login',
   failureFlash: true
 }))
+
+// google
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.GOOGLE_CALLBACK_URL
+}, (accessToken, refreshToken, profile, done) => {
+  const profile_photo = profile.photos[0] ? profile.photos[0].value : null
+  query.firstOrCreateUserByProvider(
+    'google',
+    profile.id,
+    accessToken,
+    profile_photo
+  ).then(user => {
+    done(null, user)
+  }).catch(err => {
+    done(err)
+  })
+}))
+
+app.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile']
+}))
+
+app.get('/auth/google/callback', passport.authenticate('google', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
+
+
+app.post('/user', (req, res) => {
+  res.send({
+    token:jwtToken
+  })
+})
+
+// 서버 실행 확인
+app.listen(PORT, () => {
+  console.log(`listening ${PORT}...`)
+})
