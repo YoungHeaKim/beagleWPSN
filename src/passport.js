@@ -5,6 +5,7 @@ const query = require('./query')
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
 
+// facebook
 passport.use(new FacebookStrategy({
   clientID: process.env.FACEBOOK_CLIENT_ID,
   clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
@@ -23,3 +24,15 @@ passport.use(new FacebookStrategy({
     done(err)
   })
 }))
+
+app.get('/auth/facebook', passport.authenticate('facebook', {
+  scope: ['public_profile', 'manage_pages']
+}))
+
+app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
+
+// naver
