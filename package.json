@@ -25,6 +25,7 @@
     "knex": "^0.13.0",
     "mysql": "^2.15.0",
     "passport": "^0.4.0",
-    "passport-facebook": "^2.1.1"
+    "passport-facebook": "^2.1.1",
+    "passport-naver": "^1.0.6"
   }
 }
