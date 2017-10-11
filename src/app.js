@@ -13,3 +13,6 @@ app.post('/user', (req, res) => {
     token:jwtToken
   })
 })
+app.listen(3000, () => {
+  console.log('listening...')
+})
