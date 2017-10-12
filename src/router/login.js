@@ -35,7 +35,7 @@ router.use(cors({
   origin: process.env.TARGET_ORIGIN
 }))
 
-router.get('/auth', (req, res) => {
+router.get('/', (req, res) => {
   query.getUserById(req.user.id)
     .then(user => {
       res.send({
