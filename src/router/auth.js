@@ -9,7 +9,6 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const express = require('express')
-const mw = require('../middleware')
 // router
 const router = express.Router()
 // jwt발급
@@ -19,7 +18,6 @@ const oauthHandler = (req, res) => {
   res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
 }
 
-router.use(mw.insertReq)
 router.use(passport.initialize())
 // 로그인창
 router.get('/', (req, res) => {
