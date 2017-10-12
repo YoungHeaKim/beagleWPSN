@@ -1,12 +1,11 @@
-// 파일 불러오기
-const query = require('./query')
+require('dotenv').config()  
 
 const express = require('express')
-const bodyParser = require('body-parser')
-const jwt = require('jsonwebtoken')
-// express
+const authRouter = require('./router/auth')
+const loginRouter = require('./router/login')
+
 const app = express()
-// 포트 설정
+
 const PORT = process.env.PORT || 3000
 
 const authRouter = require('./router/auth')
@@ -19,7 +18,6 @@ app.post('/user', (req, res) => {
   })
 })
 
-// 서버 실행 확인
 app.listen(PORT, () => {
-  console.log(`listening ${PORT}...`)
+  console.log(`Able to connect to ${PORT}`)
 })
