@@ -1,4 +1,4 @@
-require('dotenv').config()  
+require('dotenv').config()
 
 const express = require('express')
 const authRouter = require('./router/auth')
@@ -8,10 +8,8 @@ const app = express()
 
 const PORT = process.env.PORT || 3000
 
-const authRouter = require('./router/auth')
-
 app.use(bodyParser.json())
-app.use(authRouter)
+app.use('/auth', authRouter)
 app.post('/user', (req, res) => {
   res.send({
     token:jwtToken
