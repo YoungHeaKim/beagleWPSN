@@ -9,8 +9,10 @@ const app = express()
 // 포트 설정
 const PORT = process.env.PORT || 3000
 
-app.use(bodyParser, json())
+const authRouter = require('./router/auth')
 
+app.use(bodyParser.json())
+app.use(authRouter)
 app.post('/user', (req, res) => {
   res.send({
     token:jwtToken

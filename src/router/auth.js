@@ -4,8 +4,27 @@ const query = require('../query')
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
 const NaverStrategy = require('passport-naver').Strategy
-const NaverStrategy = require('passport-naver').Strategy
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+// middleware
+const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
+const express = require('express')
+const mw = require('../middleware')
+// router
+const router = express.Router()
+// jwt발급
+const oauthHandler = (req, res) => {
+  const token = jwt.sign({id: req.user.id}, process.env.SECRET)
+  const origin = process.env.TARGET_ORIGIN
+  res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
+}
+
+router.use(mw.insertReq)
+router.use(passport.initialize())
+// 로그인창
+router.get('/', (req, res) => {
+  res.render('auth.pug')
+})
 
 // facebook
 passport.use(new FacebookStrategy({
@@ -27,15 +46,11 @@ passport.use(new FacebookStrategy({
   })
 }))
 
-app.get('/auth/facebook', passport.authenticate('facebook', {
+router.get('/auth/facebook', passport.authenticate('facebook', {
   scope: ['public_profile', 'manage_pages']
 }))
 
-app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+router.get('/auth/facebook/callback', passport.authenticate('facebook', { session: false }), oauthHandler)
 
 // naver
 passport.use(new NaverStrategy({
@@ -56,13 +71,9 @@ passport.use(new NaverStrategy({
   })
 }))
 
-app.get('/auth/naver', passport.authenticate('naver'))
+router.get('/auth/naver', passport.authenticate('naver'))
 
-app.get('/auth/naver/callback', passport.authenticate('naver', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+router.get('/auth/naver/callback', passport.authenticate('naver', { session: false }), oauthHandler)
 
 // google
 passport.use(new GoogleStrategy({
@@ -83,12 +94,19 @@ passport.use(new GoogleStrategy({
   })
 }))
 
-app.get('/auth/google', passport.authenticate('google', {
+router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile']
 }))
 
-app.get('/auth/google/callback', passport.authenticate('google', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+router.get('/auth/google/callback', passport.authenticate('google', { session: false }), oauthHandler)
+
+// 로그인 성공 시
+// router.get('/success', mw.loginRequired, (req, res) => {
+//   const token = jwt.sign({id: req.user.id}, process.env.SECRET)
+//   res.render('로그인 성공하였습니다.', {
+//     token,
+//     origin: process.env.TARGET_ORIGIN
+//   })
+// })
+
+module.exports = router
