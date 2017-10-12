@@ -46,11 +46,11 @@ passport.use(new FacebookStrategy({
   })
 }))
 
-router.get('/auth/facebook', passport.authenticate('facebook', {
+router.get('/facebook', passport.authenticate('facebook', {
   scope: ['public_profile', 'manage_pages']
 }))
 
-router.get('/auth/facebook/callback', passport.authenticate('facebook', { session: false }), oauthHandler)
+router.get('/facebook/callback', passport.authenticate('facebook', { session: false }), oauthHandler)
 
 // naver
 passport.use(new NaverStrategy({
@@ -71,9 +71,9 @@ passport.use(new NaverStrategy({
   })
 }))
 
-router.get('/auth/naver', passport.authenticate('naver'))
+router.get('/naver', passport.authenticate('naver'))
 
-router.get('/auth/naver/callback', passport.authenticate('naver', { session: false }), oauthHandler)
+router.get('/naver/callback', passport.authenticate('naver', { session: false }), oauthHandler)
 
 // google
 passport.use(new GoogleStrategy({
@@ -94,19 +94,10 @@ passport.use(new GoogleStrategy({
   })
 }))
 
-router.get('/auth/google', passport.authenticate('google', {
+router.get('/google', passport.authenticate('google', {
   scope: ['profile']
 }))
 
-router.get('/auth/google/callback', passport.authenticate('google', { session: false }), oauthHandler)
-
-// 로그인 성공 시
-// router.get('/success', mw.loginRequired, (req, res) => {
-//   const token = jwt.sign({id: req.user.id}, process.env.SECRET)
-//   res.render('로그인 성공하였습니다.', {
-//     token,
-//     origin: process.env.TARGET_ORIGIN
-//   })
-// })
+router.get('/google/callback', passport.authenticate('google', { session: false }), oauthHandler)
 
 module.exports = router
