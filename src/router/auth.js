@@ -5,6 +5,8 @@ const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
 const NaverStrategy = require('passport-naver').Strategy
 const GoogleStrategy = require('passport-google-oauth20').Strategy
+const KakaoStrategy = require('passport-kakao').Strategy
+
 // middleware
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
@@ -97,5 +99,28 @@ router.get('/google', passport.authenticate('google', {
 }))
 
 router.get('/google/callback', passport.authenticate('google', { session: false }), oauthHandler)
+
+// kakao
+passport.use(new KakaoStrategy({
+  clientID: process.env.KAKAO_CLIENT_ID,
+  clientSecret: process.env.KAKAO_CLIENT_SECRET,
+  callbackURL: process.env.KAKAO_CALLBACK_URL
+},(accessToken, refreshToken, profile, done) => {
+  const profile_photo = profile._json.properties.profile_image? profile._json.properties.profile_image : null
+  query.firstOrCreateUserByProvider(
+    'kakao',
+    profile.id,
+    accessToken,
+    profile_photo
+  ).then(user => {
+    done(null, user)
+  }).catch(err => {
+    done(err)
+  })
+}))
+
+router.get('/kakao', passport.authenticate('kakao'))
+
+router.get('/kakao/callback', passport.authenticate('kakao', { session: false }), oauthHandler)
 
 module.exports = router
