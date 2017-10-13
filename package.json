@@ -33,6 +33,7 @@
     "passport-naver": "^1.0.6",
     "pug": "^2.0.0-rc.4",
     "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3",
     "socketio-jwt": "^4.5.0"
   },
   "devDependencies": {
