@@ -34,9 +34,11 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'displayName', 'photos', 'email']
 }, (accessToken, refreshToken, profile, done) => {
   const profile_photo = profile.photos[0] ? profile.photos[0].value : null
+  const nickname = profile._json.name? profile._json.name : null
   query.firstOrCreateUserByProvider(
     'facebook',
     profile.id,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
