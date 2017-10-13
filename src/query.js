@@ -1,7 +1,7 @@
 const knex = require('./knex')
 
 module.exports = {
-  firstOrCreateUserByProvider(provider, provider_user_id, access_token=null, profile_photo=null) {
+  firstOrCreateUserByProvider(provider, provider_user_id, nickname, access_token=null, profile_photo=null) {
     return knex('user')
       .where({
         provider,
@@ -16,6 +16,7 @@ module.exports = {
             .insert({
               provider,
               provider_user_id,
+              nickname,
               access_token,
               profile_photo
             })
