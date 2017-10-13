@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
     t.increments()
     t.string('provider').notNullable()
     t.string('provider_user_id').notNullable()
-    t.string('nickname').unique()
+    t.string('nickname')
     t.string('access_token')
     t.string('profile_photo')
     t.integer('like').defaultTo(0)
