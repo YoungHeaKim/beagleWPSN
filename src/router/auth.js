@@ -86,9 +86,11 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_CALLBACK_URL
 }, (accessToken, refreshToken, profile, done) => {
   const profile_photo = profile.photos[0] ? profile.photos[0].value : null
+  const nickname = profile._json.displayName? profile._json.displayName : null
   query.firstOrCreateUserByProvider(
     'google',
     profile.id,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
