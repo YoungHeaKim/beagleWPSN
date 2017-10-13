@@ -61,9 +61,11 @@ passport.use(new NaverStrategy({
   callbackURL: process.env.NAVER_CALLBACK_URL
 }, (accessToken, refreshToken, profile, done) => {
   const profile_photo = profile._json.profile_image ? profile._json.profile_image : null
+  const nickname = profile._json.nickname? profile._json.nickname : null
   query.firstOrCreateUserByProvider(
     'naver',
     profile.id,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
