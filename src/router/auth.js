@@ -113,9 +113,11 @@ passport.use(new KakaoStrategy({
   callbackURL: process.env.KAKAO_CALLBACK_URL
 },(accessToken, refreshToken, profile, done) => {
   const profile_photo = profile._json.properties.profile_image? profile._json.properties.profile_image : null
+  const nickname = profile.displayName? profile.displayName : null
   query.firstOrCreateUserByProvider(
     'kakao',
     profile.id,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
