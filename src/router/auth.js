@@ -112,7 +112,9 @@ passport.use(new KakaoStrategy({
   clientSecret: process.env.KAKAO_CLIENT_SECRET,
   callbackURL: process.env.KAKAO_CALLBACK_URL
 },(accessToken, refreshToken, profile, done) => {
-  const profile_photo = profile._json.properties.profile_image? profile._json.properties.profile_image : null
+  // 다른 passport는 thumbnai-image를 사용하므로 thumbnail-image로 변경함.
+  // const profile_photo = profile._json.properties.profile_image? profile._json.properties.profile_image : null
+  const profile_photo = profile._json.properties.thumbnail_image? profile._json.properties.thumbnail_image : null
   const nickname = profile.displayName? profile.displayName : null
   query.firstOrCreateUserByProvider(
     'kakao',
