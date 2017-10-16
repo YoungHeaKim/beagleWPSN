@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 // 파일 불러오기
-const query = require('../query')
+const query = require('../authquery')
 
 // express를 router로 실행한다.
 const router = express.Router()
