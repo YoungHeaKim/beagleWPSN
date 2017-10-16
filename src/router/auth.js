@@ -15,7 +15,11 @@ const express = require('express')
 const router = express.Router()
 // jwt발급
 const oauthHandler = (req, res) => {
-  const token = jwt.sign({id: req.user.id, nickname: req.user.nickname}, process.env.SECRET)
+  const token = jwt.sign({
+    id: req.user.id,
+    nickname: req.user.nickname,
+    expiresIn: '1d'
+  }, process.env.SECRET)
   const origin = process.env.TARGET_ORIGIN
   res.send(`<script>window.opener.postMessage('${token}', '${origin}')</script>`)
 }
