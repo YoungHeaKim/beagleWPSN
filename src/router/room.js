@@ -1,4 +1,7 @@
 const express = require('express')
+const cors = require('cors')
+const bodyParser = require('body-parser')
+
 const {getAllRooms, createRoom, getRoomById} = require('../chatquery')
 
 const router = express.Router()
@@ -18,11 +21,18 @@ const router = express.Router()
       
 //     })
 // })
+router.use(bodyParser.json())
+
+router.use(cors({
+  origin: process.env.TARGET_ORIGIN
+}))
 
 router.post('/', (req, res) => {
-  createRoom(req.data)
+  console.log(req.body)
+
+  createRoom(req.body)
     .then(room => {
-      res.send(room)
+      res.json(room)
     })
 })
 
@@ -36,3 +46,5 @@ router.post('/', (req, res) => {
 //       }
 //     })
 // })
+
+module.exports = router
