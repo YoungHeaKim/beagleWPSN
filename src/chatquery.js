@@ -21,7 +21,9 @@ module.exports = {
           .first()
       })
   },
-  getRoomById() {
-
+  getRoomById(id) {
+    return knex('chat_room')  
+      .where({id})
+      .first()
   }
 }

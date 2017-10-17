@@ -23,6 +23,8 @@ const router = express.Router()
 // })
 router.use(bodyParser.json())
 
+router.use(bodyParser.urlencoded({ extended: false }))
+
 router.use(cors({
   origin: process.env.TARGET_ORIGIN
 }))
@@ -36,15 +38,18 @@ router.post('/', (req, res) => {
     })
 })
 
-// router.get('/:id', (req, res, next) => {
-//   getRoomById(req.params.id)
-//     .then(room => {
-//       if (room) {
-        
-//       } else {
-//         next()
-//       }
-//     })
-// })
+router.get('/:id', (req, res, next) => {
+  // 룸 보내줄때 방장정보, 참여한 사람정보, 채팅로그도 보내줘야 합니다. 추가할 것! 
+  // 또 방장로직뿐만 아니라 방장이 아닌 사람이 채팅방을 클릭했을때 채팅방리스트에 연결해줘야해여(find or create)
+
+  getRoomById(req.params.id)
+    .then(room => {
+      if (room) {
+        res.json(room)
+      } else {
+        res.status(404).send('Room Not Found')
+      }
+    })
+})
 
 module.exports = router
