@@ -23,6 +23,8 @@ const router = express.Router()
 // })
 router.use(bodyParser.json())
 
+router.use(bodyParser.urlencoded({ extended: false }))
+
 router.use(cors({
   origin: process.env.TARGET_ORIGIN
 }))
@@ -36,15 +38,17 @@ router.post('/', (req, res) => {
     })
 })
 
-// router.get('/:id', (req, res, next) => {
-//   getRoomById(req.params.id)
-//     .then(room => {
-//       if (room) {
-        
-//       } else {
-//         next()
-//       }
-//     })
-// })
+router.get('/:id', (req, res, next) => {
+  console.log(req.params.id)
+
+  getRoomById(req.params.id)
+    .then(room => {
+      if (room) {
+        res.json(room)
+      } else {
+        res.status(404).send('Room Not Found')
+      }
+    })
+})
 
 module.exports = router
