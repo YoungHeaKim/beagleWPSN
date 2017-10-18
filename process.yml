@@ -1,0 +1,5 @@
+apps:
+  - script: src/index.js
+    name: beagle
+    env_production:
+      NODE_ENV: production
