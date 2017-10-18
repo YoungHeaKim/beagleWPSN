@@ -38,11 +38,11 @@ passport.use(new FacebookStrategy({
   profileFields: ['id', 'displayName', 'photos', 'email']
 }, (accessToken, refreshToken, profile, done) => {
   const profile_photo = profile.photos[0] ? profile.photos[0].value : null
-  // const nickname = profile._json.name? profile._json.name : null
+  const nickname = profile._json.name? profile._json.name : null
   query.firstOrCreateUserByProvider(
     'facebook',
     profile.id,
-    // nickname,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
@@ -65,11 +65,11 @@ passport.use(new NaverStrategy({
   callbackURL: process.env.NAVER_CALLBACK_URL
 }, (accessToken, refreshToken, profile, done) => {
   const profile_photo = profile._json.profile_image ? profile._json.profile_image : null
-  // const nickname = profile._json.nickname? profile._json.nickname : null
+  const nickname = profile._json.nickname? profile._json.nickname : null
   query.firstOrCreateUserByProvider(
     'naver',
     profile.id,
-    // nickname,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
@@ -90,11 +90,11 @@ passport.use(new GoogleStrategy({
   callbackURL: process.env.GOOGLE_CALLBACK_URL
 }, (accessToken, refreshToken, profile, done) => {
   const profile_photo = profile.photos[0] ? profile.photos[0].value : null
-  // const nickname = profile._json.displayName? profile._json.displayName : null
+  const nickname = profile._json.displayName? profile._json.displayName : null
   query.firstOrCreateUserByProvider(
     'google',
     profile.id,
-    // nickname,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
@@ -119,11 +119,11 @@ passport.use(new KakaoStrategy({
   // 다른 passport는 thumbnai-image를 사용하므로 thumbnail-image로 변경함.
   // const profile_photo = profile._json.properties.profile_image? profile._json.properties.profile_image : null
   const profile_photo = profile._json.properties.thumbnail_image? profile._json.properties.thumbnail_image : null
-  // const nickname = profile.displayName? profile.displayName : null
+  const nickname = profile.displayName? profile.displayName : null
   query.firstOrCreateUserByProvider(
     'kakao',
     profile.id,
-    // nickname,
+    nickname,
     accessToken,
     profile_photo
   ).then(user => {
