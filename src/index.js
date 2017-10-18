@@ -4,7 +4,6 @@ const express = require('express')
 const authRouter = require('./router/auth')
 const loginRouter = require('./router/login')
 const roomsRouter = require('./router/room')
-const mainRouter = require('./router/main')
 
 const app = express()
 
@@ -15,7 +14,6 @@ app.set('trust proxy')
 app.use('/auth', authRouter)
 app.use('/login', loginRouter)
 app.use('/api/chat-rooms', roomsRouter)
-app.use('/', mainRouter)
 
 // 서버 테스트
 app.use('/test', function(req, res) { return res.send({ alive: true }) })
