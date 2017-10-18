@@ -1,5 +1,5 @@
 // profilequery.js
-cosnt knex = require('./knex.js')
+const knex = require('./knex.js')
 
 module.exports = {
   // 채팅방 삭제하는 코드
