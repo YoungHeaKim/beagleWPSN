@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const {getAllRooms, createRoom, getRoomById} = require('../chatquery')
+const {getAllRooms, createRoom, getRoomById, getRoomInfoById} = require('../chatquery')
 
 const router = express.Router()
 
@@ -30,11 +30,18 @@ router.use(cors({
 }))
 
 router.post('/', (req, res) => {
-  console.log(req.body)
 
   createRoom(req.body)
     .then(room => {
-      res.json(room)
+      console.log(room)
+      if (room) {
+        getRoomInfoById({chat_room_id: room.id})
+          .then(info => {
+            res.json(info)
+          })
+      } else {
+        res.status(404).send('Room Not Found')
+      }
     })
 })
 
@@ -45,7 +52,10 @@ router.get('/:id', (req, res, next) => {
   getRoomById(req.params.id)
     .then(room => {
       if (room) {
-        res.json(room)
+        getRoomInfoById({chat_room_id: room.id})
+          .then(info => {
+            res.json(info)
+          })
       } else {
         res.status(404).send('Room Not Found')
       }
