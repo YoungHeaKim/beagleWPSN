@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
       }
     })
   Promise.all([user, room])
-    .then
+    .then()
 })
 
 
