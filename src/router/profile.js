@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const {getUserById} = require('../authquery')
 const {getRoomById} = require('../chatquery')
