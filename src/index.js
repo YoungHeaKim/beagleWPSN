@@ -4,6 +4,7 @@ const express = require('express')
 const authRouter = require('./router/auth')
 const loginRouter = require('./router/login')
 const roomsRouter = require('./router/room')
+const profileRouter = require('./router/profile')
 
 const app = express()
 
