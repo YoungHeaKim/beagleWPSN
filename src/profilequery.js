@@ -8,10 +8,6 @@ module.exports = {
       .where({id})
       .delete()
   },
-  // 해당 user에 user정보와 참가하고 있는 room정보를 가져온다.
-  getProfile() {
-    return knex('user')
-  }
   // user정보 수정하는 코드
 
 }

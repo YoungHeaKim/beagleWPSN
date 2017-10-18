@@ -20,22 +20,24 @@ router.use(cors({
 // 로그인이 되어있는 유저가 들어가있는 방 정보를 가져온다.
 router.get('/', (req, res, next) => {
   // 자기 자신의 프로필을 가져온다.
-  // getUserById(req.params.id)
-  //   .then(user => {
-  //     if(user) {
-  //       res.json(user)
-  //     } else {
-  //       res.status(404).send('User로그인 정보가 다릅니다.')
-  //     }
-  //   }),
-  // getRoomById(req.params.id)
-  //   .then(room => {
-  //     if (room) {
-  //       res.json(room)
-  //     } else {
-  //       res.status(404).send('Room Not Found')
-  //     }
+  const user = getUserById(req.params.id)
+    .then(user => {
+      if(user) {
+        res.json(user)
+      } else {
+        res.status(404).send('User로그인 정보가 다릅니다.')
+      }
     })
+  const room = getRoomById(req.params.id)
+    .then(room => {
+      if (room) {
+        res.json(room)
+      } else {
+        res.status(404).send('Room Not Found')
+      }
+    })
+  Promise.all([user, room])
+    .then
 })
 
 
