@@ -79,5 +79,15 @@ module.exports = {
             })
         }
       })
+  },
+  // 새로운 채팅로그를 생성한다.
+  createLog({message, chat_room_id, user_id}) {
+    return knex('chat_log')
+      .insert({
+        message,
+        chat_room_id,
+        user_id
+      })
+      .then(log => log)
   }
 }
