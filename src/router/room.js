@@ -63,20 +63,4 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
-// 새로운 로그생성 
-router.post('/:id', (req, res, next) => {
-  const chat_room_id = req.body.id
-  const user_id = req.body.user_id
-  const message = req.body.message
-  
-  createLog({message, user_id, chat_room_id})
-    .then(log => {
-      if (log === []) {
-        res.status(404).send('Log failed...')
-      } else {
-        res.send({ok: true})
-      }
-    })
-})
-
 module.exports = router
