@@ -17,7 +17,6 @@ const router = express.Router()
 const oauthHandler = (req, res) => {
   const token = jwt.sign({
     id: req.user.id,
-    nickname: req.user.nickname,
     expiresIn: '1d'
   }, process.env.SECRET)
   const origin = process.env.TARGET_ORIGIN
