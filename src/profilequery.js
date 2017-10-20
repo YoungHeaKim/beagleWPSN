@@ -13,13 +13,14 @@ module.exports = {
     return knex('chat_list')
       .where({user_id})
       .then((rooms) => {
+        console.log(rooms)
         // 빈배열을 만들어준다.
         const arr = [];
         // 위에서 가져온 rooms을 돌려 arr의 빈배열에 room_id를 하나씩 넣어주는 작업
         rooms.map(room => {
           arr.push(knex('chat_room')
           // chat_room안에 있는 id에 room이라는 객체에서 가져온 id를 넣어준다.
-            .where({chat_room_id: room.chat_room_id})
+            .where({id: room.chat_room_id})
             .first()
         )})
         return Promise.all(arr)
