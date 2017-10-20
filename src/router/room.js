@@ -1,8 +1,9 @@
 const express = require('express')
+const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const {getAllRooms, createRoom, getRoomById, getRoomInfoById} = require('../chatquery')
+const {createLog, createRoom, getRoomById, getRoomInfoById} = require('../chatquery')
 
 const router = express.Router()
 
@@ -58,6 +59,22 @@ router.get('/:id', (req, res, next) => {
           })
       } else {
         res.status(404).send('Room Not Found')
+      }
+    })
+})
+
+// 새로운 로그생성 
+router.post('/:id', (req, res, next) => {
+  const chat_room_id = req.body.id
+  const user_id = req.body.user_id
+  const message = req.body.message
+  
+  createLog({message, user_id, chat_room_id})
+    .then(log => {
+      if (log === []) {
+        res.status(404).send('Log failed...')
+      } else {
+        res.send({ok: true})
       }
     })
 })
