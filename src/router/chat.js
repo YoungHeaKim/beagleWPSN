@@ -1,3 +1,5 @@
+const {createLog} = require('../chatquery')
+
 function chatConnect(io) {
 
   const chatNsp = io.of('/chat')
@@ -7,6 +9,7 @@ function chatConnect(io) {
 
     let roomId;
     // 토큰에서 유저아이디 대신 닉네임을 불러올 예정, socket.decoded_token.nickname
+    // id로 바꿔야 한다
     const nickname = '익명의 사용자'
     console.log(`user(${nickname}) connected`)
 
@@ -17,7 +20,7 @@ function chatConnect(io) {
     socket.on('room', (data, ack) => {
       console.log('room attacted..')
 
-      roomId = data.id
+      roomId = data.room
       socket.join(roomId)
       socket.broadcast.to(roomId).emit('user connected', {nickname})
       // ack({nickname})
@@ -28,7 +31,9 @@ function chatConnect(io) {
     // 해당 클라이언트를 제외한 모든 클라이언트에게 메시지 전송
     socket.on('new chat', (data, ack) => {
       console.log('new chat arrived...!')
-      console.log(data)
+
+      //디비에 저장하셈 
+      createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
 
       socket.broadcast.to(roomId).emit('received chat', {
         message: data.message,
