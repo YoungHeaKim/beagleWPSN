@@ -9,6 +9,9 @@ const query = require('../authquery')
 // express를 router로 실행한다.
 const router = express.Router()
 
+// cors에 unsafe요청이 있을시 통과시켜주는 부분이다.
+router.options('*', cors())
+
 /**
  * next를 사용하여 요청과 응답이 왔을 때 next를 실행한다.
  */
