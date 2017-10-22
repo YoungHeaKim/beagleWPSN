@@ -50,16 +50,13 @@ module.exports = {
     const getChatListById = knex('chat_list')
         .join('user', 'user.id', 'chat_list.user_id')
         .where('chat_list.chat_room_id', chat_room_id)
-        .then(user => user)
 
     const getChatLogById = knex('chat_log')
         .where('chat_log.chat_room_id', chat_room_id)
-        .then(logs => logs)
 
     const getARoomById = knex('chat_room')  
         .where({id: chat_room_id})
         .first()
-        .then(room => room)
     
     return Promise.all([getChatListById, getChatLogById, getARoomById])
   },
@@ -70,8 +67,9 @@ module.exports = {
         chat_room_id,
         user_id
       })
+      .first()
       .then(list => {
-        if(list === []) {
+        if(list) {
           return list
         } else {
           return knex('chat_list')
