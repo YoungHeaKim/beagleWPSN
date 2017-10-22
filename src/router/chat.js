@@ -1,17 +1,39 @@
-const {createLog} = require('../chatquery')
+const socketioJwt = require('socketio-jwt')
+const {createLog, getNicknameById} = require('../chatquery')
 
 function chatConnect(io) {
 
   const chatNsp = io.of('/chat')
 
+  chatNsp.use(socketioJwt.authorize({
+    secret: process.env.SECRET,
+    handshake: true
+  }))
+  
+  chatNsp.use((socket, next) => {
+    if (socket.decoded_token.id) {
+      next()
+    } else {
+      next(new Error('Authentication Error'))
+    }
+  })
+
   chatNsp.on('connection', socket => {
     console.log('connected!!!')
 
     let roomId;
+    let nickname;
+    const id = socket.decoded_token.id
+    console.log(id)
+
+    getNicknameById(id)
+      .then(user => nickname = user.nickname)
+      .then(() => {
+        console.log(`user(${nickname}) connected`)
+      })
     // 토큰에서 유저아이디 대신 닉네임을 불러올 예정, socket.decoded_token.nickname
     // id로 바꿔야 한다
-    const nickname = '익명의 사용자'
-    console.log(`user(${nickname}) connected`)
+    
 
     // join 이벤트
     // 해당 소켓을 room에 연결시킨다.
