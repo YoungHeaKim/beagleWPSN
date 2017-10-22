@@ -4,7 +4,7 @@ const {getUserById} = require('../authquery')
 
 function chatConnect(io) {
   console.log('inner function now')
-  const chatNsp = io.of('/chat')
+  const chatNsp = io.of('http://localhost:4000/chat')
 
   chatNsp.use(socketioJwt.authorize({
     secret: process.env.SECRET,
