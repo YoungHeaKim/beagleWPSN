@@ -1,17 +1,46 @@
-const {createLog} = require('../chatquery')
+const socketioJwt = require('socketio-jwt')
+const {createLog, getNicknameAndPhotoById} = require('../chatquery')
+const {getUserById} = require('../authquery')
 
 function chatConnect(io) {
+  console.log('inner function now')
+  io.set('origins', process.env.TARGET_ORIGIN);
 
   const chatNsp = io.of('/chat')
+
+  chatNsp.use(socketioJwt.authorize({
+    secret: process.env.SECRET,
+    handshake: true
+  }))
+  
+  chatNsp.use((socket, next) => {
+    if (socket.decoded_token.id) {
+      next()
+    } else {
+      next(new Error('Authentication Error'))
+    }
+  })
 
   chatNsp.on('connection', socket => {
     console.log('connected!!!')
 
     let roomId;
+    let nickname;
+    let profile_photo;
+    const id = socket.decoded_token.id
+    console.log(id)
+
+    getNicknameAndPhotoById(id)
+      .then(user => {
+        nickname = user.nickname
+        profile_photo = user.profile_photo
+      })
+      .then(() => {
+        console.log(`user(${nickname}) connected`)
+      })
     // 토큰에서 유저아이디 대신 닉네임을 불러올 예정, socket.decoded_token.nickname
     // id로 바꿔야 한다
-    const nickname = '익명의 사용자'
-    console.log(`user(${nickname}) connected`)
+    
 
     // join 이벤트
     // 해당 소켓을 room에 연결시킨다.
@@ -22,7 +51,8 @@ function chatConnect(io) {
 
       roomId = data.room
       socket.join(roomId)
-      socket.broadcast.to(roomId).emit('user connected', {nickname})
+      // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
+      socket.broadcast.to(roomId).emit('user connected', {nickname, profile_photo})
       // ack({nickname})
     })
 
@@ -47,6 +77,7 @@ function chatConnect(io) {
     // 한 클라이언트의 연결이 끊어졌을 때
     // 다른 모든 클라이언트에 알림
     socket.on('disconnect', () => {
+      const message = `${nickname}님이 퇴장하셨습니다.`
       chatNsp.to(roomId).emit('user disconnected', {nickname})
     })
   })

@@ -3,7 +3,6 @@ require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
-const socketioJwt = require('socketio-jwt')
 
 const authRouter = require('./router/auth')
 const loginRouter = require('./router/login')
@@ -19,19 +18,6 @@ const io = socketio(server)
 const PORT = process.env.PORT || 3000
 
 app.set('trust proxy')
-
-// io.use(socketioJwt.authorize({
-//   secret: process.env.SECRET,
-//   handshake: true
-// }))
-
-// io.use((socket, next) => {
-//   if (socket.decoded_token.id) {
-//     next()
-//   } else {
-//     next(new Error('Authentication Error'))
-//   }
-// })
 
 chatConnect(io)
 

@@ -2,8 +2,11 @@
 const knex = require('./knex')
 
 module.exports = {
-  getAllRooms() {
-
+  getNicknameAndPhotoById(id) {
+    return knex('user')
+      .select('nickname', 'profile_photo')
+      .where({id})
+      .first()
   },
   // 채팅방 생성 및 크리에이터를 챗 리스트 테이블에 추가 
   createRoom({name, description, start_at, photo=null, creator, city_id}) {
@@ -32,7 +35,7 @@ module.exports = {
           .first()
       })
   },
-  // 룸 정보를 가져온다. 
+  // 룸 정보를 가져온다. *유저정보가 들어있는지 확인하고 아니면 추가한다.*!!!!!!!!!!!!!!
   getRoomById(id) {
     // 1번
     return knex('chat_room')  
@@ -48,16 +51,13 @@ module.exports = {
     const getChatListById = knex('chat_list')
         .join('user', 'user.id', 'chat_list.user_id')
         .where('chat_list.chat_room_id', chat_room_id)
-        .then(user => user)
 
     const getChatLogById = knex('chat_log')
         .where('chat_log.chat_room_id', chat_room_id)
-        .then(logs => logs)
 
     const getARoomById = knex('chat_room')  
         .where({id: chat_room_id})
         .first()
-        .then(room => room)
     
     return Promise.all([getChatListById, getChatLogById, getARoomById])
   },
@@ -68,8 +68,9 @@ module.exports = {
         chat_room_id,
         user_id
       })
+      .first()
       .then(list => {
-        if(list === []) {
+        if(list) {
           return list
         } else {
           return knex('chat_list')
