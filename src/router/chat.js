@@ -1,8 +1,9 @@
 const socketioJwt = require('socketio-jwt')
-const {createLog, getNicknameById} = require('../chatquery')
+const {createLog, getNicknameAndPhotoById} = require('../chatquery')
+const {getUserById} = require('../authquery')
 
 function chatConnect(io) {
-
+  console.log('inner function now')
   const chatNsp = io.of('/chat')
 
   chatNsp.use(socketioJwt.authorize({
@@ -23,11 +24,15 @@ function chatConnect(io) {
 
     let roomId;
     let nickname;
+    let profile_photo;
     const id = socket.decoded_token.id
     console.log(id)
 
-    getNicknameById(id)
-      .then(user => nickname = user.nickname)
+    getNicknameAndPhotoById(id)
+      .then(user => {
+        nickname = user.nickname
+        profile_photo = user.profile_photo
+      })
       .then(() => {
         console.log(`user(${nickname}) connected`)
       })
@@ -44,7 +49,8 @@ function chatConnect(io) {
 
       roomId = data.room
       socket.join(roomId)
-      socket.broadcast.to(roomId).emit('user connected', {nickname})
+      // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
+      socket.broadcast.to(roomId).emit('user connected', {nickname, profile_photo})
       // ack({nickname})
     })
 
