@@ -2,8 +2,10 @@
 const knex = require('./knex')
 
 module.exports = {
-  getAllRooms() {
-
+  getNicknameById(id) {
+    return knex('user')
+      .where({id})
+      .first()
   },
   // 채팅방 생성 및 크리에이터를 챗 리스트 테이블에 추가 
   createRoom({name, description, start_at, photo=null, creator, city_id}) {
@@ -32,7 +34,7 @@ module.exports = {
           .first()
       })
   },
-  // 룸 정보를 가져온다. 
+  // 룸 정보를 가져온다. *유저정보가 들어있는지 확인하고 아니면 추가한다.*!!!!!!!!!!!!!!
   getRoomById(id) {
     // 1번
     return knex('chat_room')  
