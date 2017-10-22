@@ -2,8 +2,9 @@
 const knex = require('./knex')
 
 module.exports = {
-  getNicknameById(id) {
+  getNicknameAndPhotoById(id) {
     return knex('user')
+      .select('nickname', 'profile_photo')
       .where({id})
       .first()
   },
