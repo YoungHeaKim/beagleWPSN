@@ -51,12 +51,8 @@ function chatConnect(io) {
 
       roomId = data.room
       socket.join(roomId)
-      const message = `${nickname}님이 입장하셨습니다.`
-
-      createLog({message, user_id: id, chat_room_id: roomId})
-
       // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
-      socket.broadcast.to(roomId).emit('user connected', {user_id: id, message, nickname, profile_photo})
+      socket.broadcast.to(roomId).emit('user connected', {nickname, profile_photo})
       // ack({nickname})
     })
 
@@ -82,8 +78,7 @@ function chatConnect(io) {
     // 다른 모든 클라이언트에 알림
     socket.on('disconnect', () => {
       const message = `${nickname}님이 퇴장하셨습니다.`
-      createLog({message, user_id: id, chat_room_id: roomId})
-      chatNsp.to(roomId).emit('user disconnected', {user_id: id, message, nickname})
+      chatNsp.to(roomId).emit('user disconnected', {nickname})
     })
   })
 }
