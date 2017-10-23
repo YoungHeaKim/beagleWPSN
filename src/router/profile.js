@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const {getUserById} = require('../authquery')
-const {getRoomsById, checkCreatorById, deleteRoom} = require('../profilequery')
+const {getRoomsById, checkCreatorById, deleteRoom, modifyUserInfoById} = require('../profilequery')
 
 const router = express.Router()
 
@@ -22,8 +22,10 @@ router.get('/', (req, res, next) => {
   const currentUser = req.user.id
   // 자기 자신의 프로필을 가져온다.
   const user = getUserById(currentUser)
+  console.log(user);
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리를 짜주어야한다.
   const room = getRoomsById(currentUser)
+  console.log(room);
     .then(rooms => {
       checkCreatorById(rooms)
     })
@@ -34,6 +36,9 @@ router.get('/', (req, res, next) => {
     })
 })
 
-
+// 대화방 삭제
+router.delete('/', (req, res, next) => {
+  // 지웠을 경우 어떻게 처리할 것인지.
+})
 
 module.exports = router
