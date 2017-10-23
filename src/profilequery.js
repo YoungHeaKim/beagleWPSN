@@ -39,7 +39,16 @@ module.exports = {
   deleteRoom(id) {
     return knex('chat_room')
       .where({id})
-      .del()
+      .first()
+      .then(room => {
+        console.log(room)
+        console.log(room.creator)
+        if(id !== room.creator) {
+          throw new Error('삭제할 권한이 없습니다.')
+        }}
+      )
+      .delete()
+      .then(room => console.log(room))
   },
   // user정보 수정하는 코드
   modifyUserInfoById(user_id, nickname){
