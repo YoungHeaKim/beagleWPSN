@@ -21,7 +21,7 @@ module.exports = {
     })
   },
   // 위에서 가져온 데이터를 가져와 creater인지 아닌지를 비교해주는 쿼리
-  checkCreatorById(rooms) {
+  checkCreatorById(rooms, currentUser) {
     const myRooms = []
     const otherRooms = []
 
@@ -47,7 +47,7 @@ module.exports = {
           throw new Error('삭제할 권한이 없습니다.')
         }}
       )
-      .delete()
+      .del()
       .then(room => console.log(room))
   },
   // user정보 수정하는 코드

@@ -19,18 +19,17 @@ router.use(cors({
 // 로그인이 되어있는 유저 정보를 가져와야한다.
 // 로그인이 되어있는 유저가 들어가있는 방 정보를 가져온다.
 router.get('/', (req, res, next) => {
-  const currentUser = req.user.id
-  // 자기 자신의 프로필을 가져온다.
-  const user = getUserById(currentUser)
-  console.log(user);
+  const currentUser = parseInt(req.query.id)
+  // 자기 자신의 프로필을 가져온다. 해당방의 참여하고 있는 사람들의 프로필 사진만 보내주면 된다.
+  const userInfo = getUserById(currentUser)
+
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리를 짜주어야한다.
-  const room = getRoomsById(currentUser)
-  console.log(room);
+  const roomInfo = getRoomsById(currentUser)
     .then(rooms => {
-      checkCreatorById(rooms)
+      return checkCreatorById(rooms, currentUser)
     })
 
-  Promise.all([user, room])
+  Promise.all([userInfo, roomInfo])
     .then(result => {
       res.json(result)
     })
