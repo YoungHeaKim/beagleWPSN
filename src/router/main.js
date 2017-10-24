@@ -11,9 +11,10 @@ router.use(cors({
 // index page를 켰을때, 모든 RoomList를 전송한다.
 router.get('/', (req, res) => {
   query.getAllRoomList()
+    .orderBy('chat_room.id', 'desc')
+    .limit(12)
     .then(list => res.json(list))
 })
-
 // 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 router.get('/:filter', (req, res) => {
   if(req.params.filter){
@@ -32,8 +33,10 @@ router.get('/:filter', (req, res) => {
       id: id,
       like: like
     }
-    query.getDataRoomList(data).then(
-      list => res.json(list))
+    query.getDataRoomList(data)
+      .limit(12)
+      .then(
+        list => res.json(list))
   }
 })
 
