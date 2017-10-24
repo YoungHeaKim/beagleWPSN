@@ -24,7 +24,7 @@ chatConnect(io)
 app.use('/auth', authRouter)
 app.use('/login', loginRouter)
 app.use('/api/chat-rooms', roomsRouter)
-app.use('/profile', profileRouter)
+app.use('/api/profile', profileRouter)
 app.use('/api/chat-list', mainRouter)
 
 // 서버 테스트
