@@ -40,6 +40,8 @@ module.exports = {
       query = query.orderBy('like', 'desc')
     }else if(id){
       query = query.orderBy('id', 'desc')
+    }else {
+      query.orderBy('chat_room.id', 'desc')
     }
     return query
       .select('chat_room.id', 'chat_room.name', 'chat_room.description', 'chat_room.start_at', 'chat_room.photo', 'user.nickname', 'user.profile_photo', 'user.like', 'city.city_name', 'city.city_photo')
