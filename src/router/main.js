@@ -1,6 +1,8 @@
 const query = require('../mainquery')
 const express = require('express')
 const cors = require('cors')
+// limit의 변수
+let num = 12
 
 const router = express.Router()
 
@@ -9,7 +11,6 @@ router.use(cors({
 }))
 
 // index page를 켰을때, 모든 RoomList를 전송한다.
-let num = 12
 // router.get('/', (req, res) => {
 //   if(req.query.per_page){
 //     num += parseInt(req.query.per_page)
@@ -19,32 +20,30 @@ let num = 12
 //     .limit(num)
 //     .then(list => res.json(list))
 // })
-// 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
-router.get('/:filter', (req, res) => {
+
+// 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
+router.get('/', (req, res) => {
   if(req.query.per_page){
     num += parseInt(req.query.per_page)
   }
-  if(req.params.filter){
-    let id,
-        like
-    if('like' === req.query.sort){
-      like = req.query.sort
-      id = null
-    }else if('latest' === req.query.sort){
-      like = null
-      id = req.query.sort
-    }
-    const data = {
-      city_id: req.query.city_id,
-      start_at: req.query.start_at,
-      id: id,
-      like: like
-    }
-    query.getDataRoomList(data)
-      .limit(num)
-      .then(
-        list => res.json(list))
+  let id,
+      like
+  if('like' === req.query.sort){
+    like = req.query.sort
+    id = null
+  }else if('latest' === req.query.sort){
+    like = null
+    id = req.query.sort
   }
+  const data = {
+    city_id: req.query.city_id,
+    start_at: req.query.start_at,
+    id: id,
+    like: like
+  }
+  query.getDataRoomList(data)
+    .limit(num)
+    .then(list => res.json(list))
 })
 
 module.exports = router
