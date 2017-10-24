@@ -52,9 +52,10 @@ function chatConnect(io) {
       // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
       getFirstLogs({chat_room_id: roomId})
         .then(logs => {
-          socket.broadcast.to(roomId).emit('user connected', {nickname, profile_photo, logs})
+          ack({logs})
         })
-      // ack({nickname})
+
+      // socket.broadcast.to(roomId).emit('user connected', {nickname})
     })
 
     // chat 이벤트
@@ -65,24 +66,27 @@ function chatConnect(io) {
 
       //디비에 저장하셈 
       createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
+        .then(log => {
+          ack(log)
+        })
 
-      socket.broadcast.to(roomId).emit('received chat', {
-        message: data.message,
-        user_id: data.user_id,
-        created_at: data.created_at
-      })
-      // ack({ok: true})
+      socket.broadcast.to(roomId).emit('received chat', log)
+      // {
+      //   message: data.message,
+      //   user_id: data.user_id,
+      //   created_at: data.created_at
+      // }
     })
 
     // log 이벤트
     // 스크롤 이벤트로 인해 새로운 로그를 앞으로 보내줘야 할때 
     // id값을 받아서 진행한다. data.id 
-    socket.on('log request', data => {
+    socket.on('log request', (data, ack) => {
       console.log('new logs requested')
 
       getLogs({chat_room_id: roomId, id: data.id})
         .then(logs => {
-          socket.to(roomId).emit('log received', {logs})
+          ack({logs})
         })
     })
 
@@ -90,7 +94,7 @@ function chatConnect(io) {
     // 한 클라이언트의 연결이 끊어졌을 때
     // 다른 모든 클라이언트에 알림
     socket.on('disconnect', () => {
-      socket.to(roomId).emit('user disconnected', {nickname, profile_photo})
+      chatNsp.to(roomId).emit('user disconnected', {nickname, profile_photo})
     })
   })
 }
