@@ -103,13 +103,12 @@ module.exports = {
       .where({chat_room_id})
       .andWhere('id', '<', id)
       .orderBy('id', 'desc')
-      .limit(3)
-      // 테스트 목적으로 3전달 
+      .limit(7)
   },
   getFirstLogs({chat_room_id}) {
     return knex('chat_log')
       .where({chat_room_id})
       .orderBy('id', 'desc')
-      .limit(3)
+      .limit(7)
   }
 }
