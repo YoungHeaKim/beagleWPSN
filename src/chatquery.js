@@ -52,14 +52,15 @@ module.exports = {
         .join('user', 'user.id', 'chat_list.user_id')
         .where('chat_list.chat_room_id', chat_room_id)
 
-    const getChatLogById = knex('chat_log')
-        .where('chat_log.chat_room_id', chat_room_id)
+    // const getChatLogById = knex('chat_log')
+    //     .where('chat_log.chat_room_id', chat_room_id)
 
     const getARoomById = knex('chat_room')  
         .where({id: chat_room_id})
         .first()
     
-    return Promise.all([getChatListById, getChatLogById, getARoomById])
+        // getChatLogById를 제외한 상태 
+    return Promise.all([getChatListById, getARoomById])
   },
   // chat list에 이미 유저가 존재할 경우 그 값을 반환, 아닌 경우 유저를 추가함 2번 
   findOrCreateChatList({chat_room_id, user_id}) {
@@ -90,5 +91,20 @@ module.exports = {
         user_id
       })
       .then(log => log)
+  },
+  // 이전 로그를 가져온다. 
+  getLogs({chat_room_id, id}) {
+    return knex('chat_log')
+      .where({chat_room_id})
+      .andWhere('id', '<', id)
+      .orderBy('id', 'desc')
+      .limit(3)
+      // 테스트 목적으로 3전달 
+  },
+  getFirstLogs({chat_room_id}) {
+    return knex('chat_log')
+      .where({chat_room_id})
+      .orderBy('id', 'desc')
+      .limit(3)
   }
 }
