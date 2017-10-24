@@ -8,8 +8,9 @@ const {getRoomsById, checkCreatorById, deleteRoom, modifyUserInfoById} = require
 
 const router = express.Router()
 
-const jwtMiddleware = expressJwt({secret: 'secret'})
-
+router.use(expressJwt({
+  secret: process.env.SECRET
+}))
 router.use(bodyParser.json())
 
 router.use(bodyParser.urlencoded({ extended: false }))
@@ -21,7 +22,7 @@ router.use(cors({
 
 // 로그인이 되어있는 유저 정보를 가져와야한다.
 // 로그인이 되어있는 유저가 들어가있는 방 정보를 가져온다.
-router.get('/',jwtMiddleware ,(req, res, next) => {
+router.get('/',(req, res, next) => {
   const currentUser = parseInt(req.query.id)
   // 해당방의 참여하고 있는 사람들의 프로필 사진만 보내주면 된다.
   const userInfo = getUserById(currentUser)
@@ -39,7 +40,7 @@ router.get('/',jwtMiddleware ,(req, res, next) => {
 })
 
 // user의 nickname을 수정하는 부분
-router.get('/nickname',jwtMiddleware , (req, res, next) => {
+router.get('/nickname', (req, res, next) => {
   const nickname = req.query.nickname
   const user_id = req.query.user_id
   modifyUserInfoById(user_id, nickname)
@@ -49,13 +50,11 @@ router.get('/nickname',jwtMiddleware , (req, res, next) => {
 })
 
 // 대화방 삭제
-router.delete('/delete',jwtMiddleware ,(req, res, next) => {
+router.delete('/delete', (req, res, next) => {
   // 지웠을 경우 어떻게 처리할 것인지.
   // 삭제할 권한이 있는지 없는지 비교하는 부분
   const id = req.params.id
   const creator = req.user.id
-  console.log(id)
-  console.log(creator)
   deleteRoom(id, creator)
     .then(() => {
       if(creator) {
