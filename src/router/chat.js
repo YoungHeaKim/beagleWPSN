@@ -1,9 +1,8 @@
 const socketioJwt = require('socketio-jwt')
-const {createLog, getNicknameAndPhotoById} = require('../chatquery')
+const {createLog, getNicknameAndPhotoById, getFirstLogs, getLogs} = require('../chatquery')
 const {getUserById} = require('../authquery')
 
 function chatConnect(io) {
-  console.log('inner function now')
   io.set('origins', process.env.TARGET_ORIGIN);
 
   const chatNsp = io.of('/chat')
@@ -28,7 +27,6 @@ function chatConnect(io) {
     let nickname;
     let profile_photo;
     const id = socket.decoded_token.id
-    console.log(id)
 
     getNicknameAndPhotoById(id)
       .then(user => {
@@ -52,7 +50,10 @@ function chatConnect(io) {
       roomId = data.room
       socket.join(roomId)
       // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
-      socket.broadcast.to(roomId).emit('user connected', {nickname, profile_photo})
+      getFirstLogs({chat_room_id: roomId})
+        .then(logs => {
+          socket.broadcast.to(roomId).emit('user connected', {nickname, profile_photo, logs})
+        })
       // ack({nickname})
     })
 
@@ -73,12 +74,23 @@ function chatConnect(io) {
       // ack({ok: true})
     })
 
+    // log 이벤트
+    // 스크롤 이벤트로 인해 새로운 로그를 앞으로 보내줘야 할때 
+    // id값을 받아서 진행한다. data.id 
+    socket.on('log request', data => {
+      console.log('new logs requested')
+
+      getLogs({chat_room_id: roomId, id: data.id})
+        .then(logs => {
+          socket.to(roomId).emit('log received', {logs})
+        })
+    })
+
     // disconnect 내장 이벤트
     // 한 클라이언트의 연결이 끊어졌을 때
     // 다른 모든 클라이언트에 알림
     socket.on('disconnect', () => {
-      const message = `${nickname}님이 퇴장하셨습니다.`
-      chatNsp.to(roomId).emit('user disconnected', {nickname})
+      socket.to(roomId).emit('user disconnected', {nickname, profile_photo})
     })
   })
 }
