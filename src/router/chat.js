@@ -67,10 +67,10 @@ function chatConnect(io) {
       //디비에 저장하셈 
       createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
         .then(log => {
+          console.log(log)
           ack(log)
+          socket.broadcast.to(roomId).emit('received chat', log)
         })
-
-      socket.broadcast.to(roomId).emit('received chat', log)
       // {
       //   message: data.message,
       //   user_id: data.user_id,
