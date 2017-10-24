@@ -20,6 +20,12 @@ module.exports = {
       return Promise.all(arr)
     })
   },
+  // 현재 채팅방에 참여중인 user들의 사진가져오기
+  // getUserProfilePhotoByRooms(profile_photo) = {
+  //   return knex('chat_list')
+  //     .where({})
+  //     .then()
+  // }
   // 위에서 가져온 데이터를 가져와 creater인지 아닌지를 비교해주는 쿼리
   checkCreatorById(rooms, currentUser) {
     const myRooms = []
@@ -36,19 +42,10 @@ module.exports = {
     return [myRooms, otherRooms]
   },
   // 채팅방 삭제하는 코드
-  deleteRoom(id) {
+  deleteRoom(id, creator) {
     return knex('chat_room')
-      .where({id})
-      .first()
-      .then(room => {
-        console.log(room)
-        console.log(room.creator)
-        if(id !== room.creator) {
-          throw new Error('삭제할 권한이 없습니다.')
-        }}
-      )
+      .where({id, creator})
       .del()
-      .then(room => console.log(room))
   },
   // user정보 수정하는 코드
   modifyUserInfoById(user_id, nickname){
