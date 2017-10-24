@@ -90,7 +90,12 @@ module.exports = {
         chat_room_id,
         user_id
       })
-      .then(log => log)
+      .then(([id]) => {
+        console.log(id)
+        return knex('chat_log')
+          .where({id})
+          .first()
+      })
   },
   // 이전 로그를 가져온다. 
   getLogs({chat_room_id, id}) {
