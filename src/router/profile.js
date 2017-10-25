@@ -52,7 +52,7 @@ router.get('/nickname', (req, res, next) => {
 router.delete('/delete', (req, res, next) => {
   // 지웠을 경우 어떻게 처리할 것인지.
   // 삭제할 권한이 있는지 없는지 비교하는 부분
-  const chat_room_id = req.query.chat_room_id
+  const chat_room_id = req.query.id
   const user_id = req.user.id
   deleteRoom(user_id, chat_room_id)
     .then(() => {
@@ -74,6 +74,7 @@ router.delete('/delete', (req, res, next) => {
     })
     .then(result => {
       res.json(result)
+      res.send(chat_room_id)
     })
 })
 
