@@ -61,22 +61,18 @@ router.delete('/delete', (req, res, next) => {
         // 해당유저가 채팅방이 삭제할 경우 creator를 다른유저에게 넘겨주는 부분
         findNextCreator({chat_room_id, user_id})
           .then(result => {
-            console.log(result)
             const resultUser = result.user_id
             updateCreator(user_id, resultUser)
-              .then(updateresult => {
-                res.send(updateresult)
+              .then(result => {
+                res.json(result)
+                res.send(chat_room_id)
               })
          })
-
       } else {
         throw new Error('삭제할 권한이 없습니다.')
       }
     })
-    .then(result => {
-      res.json(result)
-      res.send(chat_room_id)
-    })
+
 })
 
 module.exports = router

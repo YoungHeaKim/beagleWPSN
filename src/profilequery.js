@@ -15,6 +15,7 @@ module.exports = {
         arr.push(knex('chat_room')
         // chat_room안에 있는 id에 room이라는 객체에서 가져온 id를 넣어준다.
         .where({id: room.chat_room_id})
+        .orderBy('id', 'desc')
         .first()
       )})
       return Promise.all(arr)
