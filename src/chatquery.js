@@ -20,14 +20,15 @@ module.exports = {
         city_id
       })
       .then(([id]) => {
-        knex('chat_list')
+        return knex('chat_list')
           .insert({
             user_id: creator,
             chat_room_id: id
           })
-          .then(user => console.log(user))
-
-        return id
+          .then(user => {
+            console.log(user)
+            return id
+          })
       })
       .then(id => {
         return knex('chat_room')
