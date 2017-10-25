@@ -3,8 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 
-const {getUserById} = require('../authquery')
-const {getRoomsById, checkCreatorById, deleteRoom, modifyUserInfoById} = require('../profilequery')
+const {getRoomsById, checkCreatorById, deleteRoom, modifyUserInfoById, findNextCreator, getUserProfilePhotoByRooms, updateCreator} = require('../profilequery')
 
 const router = express.Router()
 
@@ -53,20 +52,29 @@ router.get('/nickname', (req, res, next) => {
 router.delete('/delete', (req, res, next) => {
   // 지웠을 경우 어떻게 처리할 것인지.
   // 삭제할 권한이 있는지 없는지 비교하는 부분
-  const id = req.params.id
-  const creator = req.user.id
-  deleteRoom(id, creator)
+  const chat_room_id = req.query.chat_room_id
+  const user_id = req.user.id
+  deleteRoom(user_id, chat_room_id)
     .then(() => {
-      if(creator) {
-        console.log('success')
-        next()
+      if(user_id) {
+        // 해당유저가 채팅방이 삭제할 경우 creator를 다른유저에게 넘겨주는 부분
+        findNextCreator({chat_room_id, user_id})
+          .then(result => {
+            console.log(result)
+            const resultUser = result.user_id
+            updateCreator(user_id, resultUser)
+              .then(updateresult => {
+                res.send(updateresult)
+              })
+         })
+
       } else {
         throw new Error('삭제할 권한이 없습니다.')
       }
     })
-  .then(result => {
-    res.json(result)
-  })
+    .then(result => {
+      res.json(result)
+    })
 })
 
 module.exports = router
