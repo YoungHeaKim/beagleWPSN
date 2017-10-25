@@ -52,10 +52,11 @@ function chatConnect(io) {
       // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
       getFirstLogs({chat_room_id: roomId})
         .then(logs => {
-          ack({logs})
+          const newUser = {user_id: id, profile_photo, nickname}
+          ack({logs, newUser})
         })
 
-      // socket.broadcast.to(roomId).emit('user connected', {nickname})
+      socket.broadcast.to(roomId).emit('user connected', {nickname})
     })
 
     // chat 이벤트
