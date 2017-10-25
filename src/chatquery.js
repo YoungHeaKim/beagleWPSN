@@ -52,9 +52,6 @@ module.exports = {
         .join('user', 'user.id', 'chat_list.user_id')
         .where('chat_list.chat_room_id', chat_room_id)
 
-    // const getChatLogById = knex('chat_log')
-    //     .where('chat_log.chat_room_id', chat_room_id)
-
     const getARoomById = knex('chat_room')  
         .where({id: chat_room_id})
         .first()
@@ -110,5 +107,9 @@ module.exports = {
       .where({chat_room_id})
       .orderBy('id', 'desc')
       .limit(7)
-  }
+  },
+  getChatLogById(chat_room_id) {
+    return knex('chat_log')
+      .where('chat_log.chat_room_id', chat_room_id)
+  } 
 }
