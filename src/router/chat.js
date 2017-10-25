@@ -52,11 +52,10 @@ function chatConnect(io) {
       // 프로필 포토까지 넘겨줘서 앞에 참여목록에 넣을 수 있도록 한다. 
       getFirstLogs({chat_room_id: roomId})
         .then(logs => {
-          const newUser = {user_id: id, profile_photo, nickname}
-          ack({logs, newUser})
+          ack({logs})
         })
 
-      socket.broadcast.to(roomId).emit('user connected', {nickname})
+      socket.broadcast.to(roomId).emit('user connected', {id})
     })
 
     // chat 이벤트
@@ -95,6 +94,7 @@ function chatConnect(io) {
     // 한 클라이언트의 연결이 끊어졌을 때
     // 다른 모든 클라이언트에 알림
     socket.on('disconnect', () => {
+      console.log('디스커넥트 이벤트가 도착했습니다.')
       chatNsp.to(roomId).emit('user disconnected', {nickname, profile_photo})
     })
   })
