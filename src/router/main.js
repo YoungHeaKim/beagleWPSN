@@ -1,8 +1,7 @@
 const query = require('../mainquery')
 const express = require('express')
 const cors = require('cors')
-// limit의 변수
-let num = 12
+
 
 const router = express.Router()
 
@@ -23,8 +22,10 @@ router.use(cors({
 
 // 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 router.get('/', (req, res) => {
-  if(req.query.per_page){
-    num += parseInt(req.query.per_page)
+  // limit의 변수
+  let num = 12
+  if(req.query.add_list){
+    num += parseInt(req.query.add_list)
   }
   let id,
       like
