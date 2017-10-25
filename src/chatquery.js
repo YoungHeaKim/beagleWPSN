@@ -108,8 +108,4 @@ module.exports = {
       .orderBy('id', 'desc')
       .limit(7)
   },
-  getChatLogById(chat_room_id) {
-    return knex('chat_log')
-      .where('chat_log.chat_room_id', chat_room_id)
-  } 
 }
