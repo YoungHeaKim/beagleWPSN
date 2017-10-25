@@ -4,6 +4,7 @@ const cors = require('cors')
 const expressJwt = require('express-jwt')
 
 const {getRoomsById, checkCreatorById, deleteRoom, modifyUserInfoById, findNextCreator, getUserProfilePhotoByRooms, updateCreator} = require('../profilequery')
+const {getUserById} = require('../authquery')
 
 const router = express.Router()
 
