@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const {createLog, createRoom, findOrCreateChatList ,getRoomById, getRoomInfoById, getChatLogById} = require('../chatquery')
+const {createLog, createRoom, findOrCreateChatList ,getRoomById, getRoomInfoById} = require('../chatquery')
 
 const router = express.Router()
 
@@ -34,16 +34,10 @@ router.post('/', (req, res) => {
 
   createRoom(req.body)
     .then(room => {
-      console.log(room)
       if (room) {
         getRoomInfoById({chat_room_id: room.id})
           .then(info => {
-            let temp = info
-            getChatLogById(temp[1].id)
-              .then(logs => {
-                temp[0] = logs
-                res.json(temp)
-              })
+            res.json(info)
           })
       } else {
         res.status(404).send('Room Not Found')
