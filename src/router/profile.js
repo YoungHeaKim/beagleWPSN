@@ -64,8 +64,7 @@ router.delete('/delete', (req, res, next) => {
             const resultUser = result.user_id
             updateCreator(user_id, resultUser)
               .then(result => {
-                res.json(result)
-                res.send(chat_room_id)
+                res.json({id: chat_room_id})
               })
          })
       } else {

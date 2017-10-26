@@ -22,11 +22,13 @@ module.exports = {
     })
   },
   // 현재 채팅방에 참여중인 user들의 사진가져오기
-  getUserProfilePhotoByRooms(profile_photo) {
-    return knex('chat_list')
-      .join('user', 'user.id', 'chat_list.user_id')
-      .select('user.profile_photo', 'chat_list.user.id')
-  },
+  // getUserProfilePhotoByRooms(chat_room_id) {
+  //   return knex('chat_list')
+  //     .join('user', 'user.id', 'chat_list.user_id')
+  //     .select('user.profile_photo', 'chat_list.user_id', 'user.like')
+  //     .where({chat_room_id})
+  //     .orderBy('like', 'desc')
+  // },
   // 위에서 가져온 데이터를 가져와 creater인지 아닌지를 비교해주는 쿼리
   checkCreatorById(rooms, currentUser) {
     const myRooms = []
