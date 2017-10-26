@@ -55,7 +55,7 @@ function chatConnect(io) {
           ack({logs})
         })
 
-      socket.broadcast.to(roomId).emit('user connected', {id})
+      socket.broadcast.to(roomId).emit('user connected', {user_id: id, nickname, profile_photo})
     })
 
     // chat 이벤트
@@ -63,6 +63,10 @@ function chatConnect(io) {
     // 해당 클라이언트를 제외한 모든 클라이언트에게 메시지 전송
     socket.on('new chat', (data, ack) => {
       console.log('new chat arrived...!')
+
+      if(!roomId) {
+        roomId = data.room_id
+      }
 
       //디비에 저장하셈 
       createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
