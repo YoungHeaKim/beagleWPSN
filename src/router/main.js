@@ -9,26 +9,11 @@ router.use(cors({
   origin: process.env.TARGET_ORIGIN
 }))
 
-// index page를 켰을때, 모든 RoomList를 전송한다.
-// router.get('/', (req, res) => {
-//   if(req.query.per_page){
-//     num += parseInt(req.query.per_page)
-//   }
-//   query.getAllRoomList()
-//     .orderBy('chat_room.id', 'desc')
-//     .limit(num)
-//     .then(list => res.json(list))
-// })
-
 // 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 router.get('/', (req, res) => {
-  // limit의 변수
-  let num = 12
-  if(req.query.add_list){
-    num += parseInt(req.query.add_list)
-  }
   let id,
-      like
+      like,
+      defaultLength = 6
   if('like' === req.query.sort){
     like = req.query.sort
     id = null
@@ -40,11 +25,19 @@ router.get('/', (req, res) => {
     city_id: req.query.city_id,
     start_at: req.query.start_at,
     id: id,
-    like: like
+    like: like,
+    lastLike: req.query.lastLike,
+    lastId: req.query.lastId
   }
   query.getDataRoomList(data)
-    .limit(num)
-    .then(list => res.json(list))
+  .limit(defaultLength)
+  .then(list => {
+    if(data.lastId){
+      query.getIdLikeData(data)
+      .then(data => res.send(data))
+    }
+    res.send(list)
+    })
 })
 
 module.exports = router
