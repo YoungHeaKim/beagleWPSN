@@ -6,7 +6,7 @@ module.exports = {
       .join('chat_room', 'chat_room.creator', 'user.id')
       .join('city', 'chat_room.city_id', 'city.id')
   },
-  getDataRoomList ({city_id, start_at, like, id, lastId, lastLike}) {
+  getDataRoomList ({city_id, start_at, like, id}) {
     let query = this.getAllRoomList()
     if(city_id && start_at){
       if(like){
