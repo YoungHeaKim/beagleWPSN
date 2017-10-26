@@ -36,10 +36,7 @@ function chatConnect(io) {
       .then(() => {
         console.log(`user(${nickname}) connected`)
       })
-    // 토큰에서 유저아이디 대신 닉네임을 불러올 예정, socket.decoded_token.nickname
-    // id로 바꿔야 한다
-    
-
+      
     // join 이벤트
     // 해당 소켓을 room에 연결시킨다.
     // 클라이언트에 username을 보낸다.
@@ -75,11 +72,6 @@ function chatConnect(io) {
           ack(log)
           socket.broadcast.to(roomId).emit('received chat', log)
         })
-      // {
-      //   message: data.message,
-      //   user_id: data.user_id,
-      //   created_at: data.created_at
-      // }
     })
 
     // log 이벤트
@@ -99,7 +91,7 @@ function chatConnect(io) {
     // 다른 모든 클라이언트에 알림
     socket.on('disconnect', () => {
       console.log('디스커넥트 이벤트가 도착했습니다.')
-      chatNsp.to(roomId).emit('user disconnected', {nickname, profile_photo})
+      chatNsp.to(roomId).emit('user disconnected', {nickname})
     })
   })
 }
