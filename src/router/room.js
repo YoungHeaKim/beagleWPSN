@@ -34,7 +34,6 @@ router.post('/', (req, res) => {
 
   createRoom(req.body)
     .then(room => {
-      console.log(room)
       if (room) {
         getRoomInfoById({chat_room_id: room.id})
           .then(info => {
