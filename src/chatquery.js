@@ -33,6 +33,7 @@ module.exports = {
       .then(id => {
         return knex('chat_room')
           .where({id})
+          .select('id')
           .first()
       })
   },

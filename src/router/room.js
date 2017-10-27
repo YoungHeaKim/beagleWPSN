@@ -36,12 +36,13 @@ router.use(cors({
 // 
 router.post('/', (req, res) => {
   createRoom(req.body)
-    .then(room => {
-      if (room) {
-        getRoomInfoById({chat_room_id: room.id})
-          .then(info => {
-            res.json(info)
-          })
+    .then(roomId => {
+      if (roomId) {
+        res.json(roomId)
+        // getRoomInfoById({chat_room_id: room.id})
+        //   .then(info => {
+        //     res.json(info)
+        //   })
       } else {
         res.status(404).send('Room Not Found')
       }
@@ -51,14 +52,12 @@ router.post('/', (req, res) => {
 router.get('/ids', (req, res) => {
   findRoomsIdByUserId(req.user.id)
     .then(ids => {
-      console.log(ids)
       res.json(ids)
     })
     .catch(e => res.status(404).send('Room Ids Not Found'))
 })
 
 router.get('/:id', (req, res) => {
-  console.log('***아이디를 들고 요청하는 부분***', req.params.id, req.user.id)
   findOrCreateChatList({chat_room_id: req.params.id, user_id: req.user.id})
     .then(() =>{
       getRoomById(req.params.id)
