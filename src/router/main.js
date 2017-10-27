@@ -31,11 +31,7 @@ router.get('/', (req, res) => {
   }
   query.getIdLikeData(data)
     .limit(6)
-    .then(d =>
-      res.send(d))
-    //   {
-    //   return res.send(d)
-    // })
+    .then(list => res.send(list))
 })
 
 module.exports = router

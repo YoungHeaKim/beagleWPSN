@@ -53,8 +53,8 @@ module.exports = {
     let query = this.getDataRoomList(others)
         lastId = parseInt(lastId)
         lastLike = parseInt(lastLike)
-    if(lastId && lastLike != null){
-      query =query.andWhere('chat_room.id', '<', lastId)
+    if(lastId){
+      query = query.andWhere('chat_room.id', '<', lastId)
     }
     return query
   }
