@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 
 // 기능별로 나눌것 
 
-const {createLog, createRoom, findOrCreateChatList ,getRoomById, getRoomInfoById} = require('../chatquery')
+const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomById, getRoomInfoById} = require('../chatquery')
 
 const router = express.Router()
 
@@ -48,8 +48,18 @@ router.post('/', (req, res) => {
     })
 })
 
-router.get('/:id', (req, res, next) => {
-  findOrCreateChatList({chat_room_id: req.params.id, user_id: req.query.user_id})
+router.get('/ids', (req, res) => {
+  findRoomsIdByUserId(req.user.id)
+    .then(ids => {
+      console.log(ids)
+      res.json(ids)
+    })
+    .catch(e => res.status(404).send('Room Ids Not Found'))
+})
+
+router.get('/:id', (req, res) => {
+  console.log('***아이디를 들고 요청하는 부분***', req.params.id, req.user.id)
+  findOrCreateChatList({chat_room_id: req.params.id, user_id: req.user.id})
     .then(() =>{
       getRoomById(req.params.id)
       .then(room => {
