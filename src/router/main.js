@@ -11,9 +11,8 @@ router.use(cors({
 
 // 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 router.get('/', (req, res) => {
-  let id,
-      like,
-      defaultLength = 6
+  let id, like
+
   if('like' === req.query.sort){
     like = req.query.sort
     id = null
@@ -21,23 +20,22 @@ router.get('/', (req, res) => {
     like = null
     id = req.query.sort
   }
-  const data = {
+
+  let data = {
     city_id: req.query.city_id,
     start_at: req.query.start_at,
-    id: id,
     like: like,
+    id: id,
     lastLike: req.query.lastLike,
     lastId: req.query.lastId
   }
-  query.getDataRoomList(data)
-  .limit(defaultLength)
-  .then(list => {
-    if(data.lastId){
-      query.getIdLikeData(data)
-      .then(data => res.send(data))
-    }
-    res.send(list)
-    })
+  query.getIdLikeData(data)
+    .limit(6)
+    .then(d =>
+      res.send(d))
+    //   {
+    //   return res.send(d)
+    // })
 })
 
 module.exports = router
