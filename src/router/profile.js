@@ -4,6 +4,7 @@ const cors = require('cors')
 const expressJwt = require('express-jwt')
 
 const { getRoomsById, checkCreatorById, exitRoom, modifyUserInfoById, findNextCreator, deleteRoom, updateCreator, selectUserByRoom, selectCreator } = require('../profilequery')
+const {getUserById} = require('../authquery')
 
 const router = express.Router()
 
@@ -24,13 +25,18 @@ router.use(cors({
 router.get('/', (req, res, next) => {
   const currentUser = parseInt(req.query.id)
 
+  // 해당방의 참여하고 있는 사람들의 프로필 사진만 보내주면 된다.
+  const userInfo = getUserById(currentUser)
+
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리를 짜주어야한다.
   const roomInfo = getRoomsById(currentUser)
     .then(rooms => {
       return checkCreatorById(rooms, currentUser)
-        .then(result => {
-          res.json(result)
-        })
+    })
+
+  Promise.all([userInfo, roomInfo])
+    .then(result => {
+      res.json(result)
     })
 })
 
@@ -50,16 +56,14 @@ router.delete('/delete/:room_id', (req, res) => {
   const chat_room_id = req.params.room_id
   selectUserByRoom(chat_room_id)
     .then(result => {
-      console.log(result.length)
-      console.log(result[0].creator)
         if (result.length > 1 && user_id != result[0].creator) {
+          // 해당 방의 참여 유저가 1명이상일 때와 로그인한 유저가 방장이 아닐때 그냥 방을 나가는 부분
           exitRoom(user_id, chat_room_id)
             .then(result => {
-              console.log('exit 1')
-              res.json({id: chat_room_id })
+              res.send({id: chat_room_id })
             })
         } else if(result.length > 1 && user_id == result[0].creator ) {
-          // 해당유저가 채팅방이 삭제할 경우 creator를 다른유저에게 넘겨주는 부분
+          // 해당유저가 채팅방이 나갈 경우 creator를 다른유저에게 넘겨주는 부분
           exitRoom(user_id, chat_room_id)
             .then(() => {
               findNextCreator({ chat_room_id, user_id })
@@ -67,16 +71,14 @@ router.delete('/delete/:room_id', (req, res) => {
                   const resultUser = result.user_id
                   updateCreator(user_id, resultUser)
                   .then(result => {
-                    console.log('exit')
-                    res.json({ id: chat_room_id })
+                    res.send({ id: chat_room_id })
                   })
                 })
             })
         } else {
           deleteRoom(chat_room_id)
             .then(result => {
-              console.log('delete')
-              res.json({ id: chat_room_id })
+              res.send({ id: chat_room_id })
             })
         }
     })

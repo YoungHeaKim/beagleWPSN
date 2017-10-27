@@ -3,9 +3,9 @@ const knex = require('./knex.js')
 
 module.exports = {
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리
-  getRoomsById(user_id) {
+  getRoomsById(currentUser) {
     return knex('chat_list')
-    .where({user_id})
+    .where({user_id: currentUser})
     .then((rooms) => {
       // 빈배열을 만들어준다.
       const arr = [];
@@ -69,6 +69,7 @@ module.exports = {
       .whereNot({user_id})
       .orderBy('chat_room_id', 'desc')
       .orderBy('like', 'desc')
+      .orderBy
       .first()
   },
   // 방장을 업데이트해주는 쿼리
@@ -82,5 +83,13 @@ module.exports = {
     return knex('user')
       .where({id: user_id})
       .update({nickname})
+  },
+  // 현재 채팅방에 참여중인 user들의 사진가져오기
+  getUserProfilePhotoByRooms(chat_room_id) {
+    return knex('chat_list')
+      .join('user', 'user.id', 'chat_list.user_id')
+      .select('user.profile_photo', 'chat_list.user_id', 'user.like')
+      .where({chat_room_id})
+      .orderBy('like', 'desc')
   },
 }
