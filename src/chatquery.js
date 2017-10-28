@@ -37,7 +37,7 @@ module.exports = {
           .first()
       })
   },
-  // 룸 정보를 가져온다. *유저정보가 들어있는지 확인하고 아니면 추가한다.*!!!!!!!!!!!!!!
+  // 룸 정보를 가져온다.
   getRoomById(id) {
     // 1번
     return knex('chat_room')  
@@ -51,6 +51,7 @@ module.exports = {
     // innerjoin 사용(채팅방정보 -> 사람정보, 채팅로그)
 
     const getChatListById = knex('chat_list')
+        .select('user_id', 'chat_room_id','nickname', 'profile_photo', 'like')
         .join('user', 'user.id', 'chat_list.user_id')
         .where('chat_list.chat_room_id', chat_room_id)
 
