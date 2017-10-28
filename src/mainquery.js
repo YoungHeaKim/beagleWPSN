@@ -11,39 +11,41 @@ module.exports = {
     let query = this.getAllRoomList()
     if(city_id && start_at){
       if(like){
-        query = query.where({city_id, start_at})
+        query.where({city_id})
+          .where({start_at})
           .orderBy('like', 'desc')
           .orderBy('chat_room.id', 'desc')
       }else if(id){
-        query = query.where({city_id, start_at})
+        query.where({city_id})
+          .where({start_at})
           .orderBy('chat_room.id', 'desc')
       }
     }
     else if (city_id) {
       if(like){
-        query = query.where({city_id})
+        query.where({city_id})
           .orderBy('like', 'desc')
           .orderBy('chat_room.id', 'desc')
       }
       else if(id){
-        query = query.where({city_id})
+        query.where({city_id})
           .orderBy('chat_room.id', 'desc')
       }
     }else if (start_at) {
       if(like){
-        query = query.where({start_at})
+        query.where({start_at})
           .orderBy('like', 'desc')
           .orderBy('chat_room.id', 'desc')
       }
       else if(id){
-        query = query.where({start_at})
+        query.where({start_at})
           .orderBy('chat_room.id', 'desc')
       }
     }else if(like){
-      query = query.orderBy('like', 'desc')
+      query.orderBy('like', 'desc')
         .orderBy('chat_room.id', 'desc')
     }else if(id){
-      query = query.orderBy('chat_room.id', 'desc')
+      query.orderBy('chat_room.id', 'desc')
     }else {
       query.orderBy('chat_room.id', 'desc')
     }
@@ -54,7 +56,7 @@ module.exports = {
         lastId = parseInt(lastId)
         lastLike = parseInt(lastLike)
     if(lastId){
-      query = query.andWhere('chat_room.id', '<', lastId)
+      query.andWhere('chat_room.id', '<', lastId)
     }
     return query
   }
