@@ -61,9 +61,9 @@ function chatConnect(io) {
     socket.on('new chat', (data, ack) => {
       console.log('new chat arrived...!')
 
-      if(!roomId) {
-        roomId = data.room_id
-      }
+      // if(!roomId) {
+      //   roomId = data.room_id
+      // }
 
       //디비에 저장하셈 
       createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
