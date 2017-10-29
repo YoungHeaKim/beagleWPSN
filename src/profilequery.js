@@ -85,11 +85,11 @@ module.exports = {
       .update({nickname})
   },
   // 현재 채팅방에 참여중인 user들의 사진가져오기
-  getUserProfilePhotoByRooms(chat_room_id) {
+  getUserProfilePhotoByRoom(chatRoom) {
     return knex('chat_list')
       .join('user', 'user.id', 'chat_list.user_id')
-      .select('user.profile_photo', 'chat_list.user_id', 'user.like')
-      .where({chat_room_id})
+      .select('user.profile_photo', 'user.nickname', 'chat_room_id')
+      .where({chat_room_id: chatRoom})
       .orderBy('like', 'desc')
   },
 }

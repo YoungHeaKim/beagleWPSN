@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 
-const { getRoomsById, checkCreatorById, exitRoom, modifyUserInfoById, findNextCreator, deleteRoom, updateCreator, selectUserByRoom, selectCreator } = require('../profilequery')
+const { getRoomsById, checkCreatorById, exitRoom, modifyUserInfoById, findNextCreator, deleteRoom, updateCreator, selectUserByRoom, selectCreator, getUserProfilePhotoByRoom } = require('../profilequery')
 const {getUserById} = require('../authquery')
 
 const router = express.Router()
@@ -30,23 +30,34 @@ router.get('/', (req, res, next) => {
 
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리를 짜주어야한다.
   const roomInfo = getRoomsById(currentUser)
+    // .then(chatRooms => {
+    //   // find 안에 id와 chat_room.id가 같으면 true
+    //   const chatRoomId = chatRooms.filter(id => id === id )
+    //   console.log(chatRoomId)
+    //   const chatRoom = chatRoomId.id
+    //   console.log(chatRoom)
+    //   return getUserProfilePhotoByRoom(chatRoom)
+    // })
     .then(rooms => {
       return checkCreatorById(rooms, currentUser)
     })
 
   Promise.all([userInfo, roomInfo])
     .then(result => {
-      res.json(result)
+      res.send(result)
     })
 })
 
 // user의 nickname을 수정하는 부분
 router.get('/nickname', (req, res, next) => {
-  const nickname = req.query.nickname
-  const user_id = req.query.user_id
+  const nickname = req.body.nickname
+  const user_id = req.user.id
   modifyUserInfoById(user_id, nickname)
     .then(result => {
-      res.json(result)
+      res.send({
+        id: user_id,
+        nickname: nickname
+      })
     })
 })
 
