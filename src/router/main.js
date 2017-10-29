@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
     lastLike: req.query.lastLike,
     lastId: req.query.lastId
   }
-  query.getIdLikeData(data)
+  query.getAllData(data)
     .limit(6)
     .then(list => res.send(list))
 })
