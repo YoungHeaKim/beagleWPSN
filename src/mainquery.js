@@ -11,13 +11,17 @@ module.exports = {
   // city_id 또는 start_at data가 있으면 실행하는 쿼리
   getCityStartData({city_id, start_at}){
     let query = this.getAllRoomList()
-    if(city_id && start_at){
+    if(city_id){
       query.where({city_id})
-        .where({start_at})
-    }else if(city_id){
-      query.where({city_id})
-    }else if(start_at){
+      if(start_at){
+        query.where({start_at})
+      }
+    }
+    if(start_at){
       query.where({start_at})
+      if(city_id){
+        query.where({city_id})
+      }
     }
     return query
   },
