@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "debug": "nodemon --inspect src/index.js"
+    "debug": "nodemon --inspect src/index.js",
+    "apidoc": "apidoc -i src/router -o docs",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
