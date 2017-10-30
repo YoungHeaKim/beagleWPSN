@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "debug": "nodemon --inspect src/index.js"
   },
   "repository": {
@@ -39,6 +39,8 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
-    "nodemon": "^1.12.1"
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1",
+    "supertest": "^3.0.0"
   }
 }
