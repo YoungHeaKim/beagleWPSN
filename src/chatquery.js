@@ -35,6 +35,9 @@ module.exports = {
           .select('id')
           .first()
       })
+      .catch(e => {
+        throw new Error('타입이 일치하지 않습니다.')
+      })
   },
   // 룸 정보를 가져온다.
   getRoomById(id) {
