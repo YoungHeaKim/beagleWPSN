@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomById, getRoomInfoById} = require('../chatquery')
 
 // mainquery 호출
-const {getAllData} = require('../mainquery')
+const query = require('../mainquery')
 
 const router = express.Router()
 
@@ -53,7 +53,7 @@ router.get('/', (req, res) => {
     lastLike: req.query.lastLike,
     lastId: req.query.lastId
   }
-  getAllData(data)
+  query.getAllData(data)
     .limit(6)
     .then(list => res.send(list))
 })
