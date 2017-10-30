@@ -91,9 +91,9 @@ router.get('/:id', jwtMiddleware, (req, res) => {
   const user_id = req.user.id
 
   // chat_room_id가 숫자가 아닐경우 400 리턴
-  if(typeof chat_room_id !== 'number') {
-    return res.status(400).send('Bad Request')
-  }
+  // if(typeof chat_room_id !== 'number') {
+  //   return res.status(400).send('Bad Request')
+  // }
 
   findOrCreateChatList({chat_room_id, user_id})
     .then(() =>{
