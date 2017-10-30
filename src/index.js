@@ -33,3 +33,5 @@ app.use('/test', function(req, res) { return res.send({ alive: true }) })
 server.listen(PORT, () => {
   console.log(`Able to connect to ${PORT}`)
 })
+
+module.exports = server
