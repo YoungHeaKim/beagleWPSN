@@ -7,7 +7,7 @@ const bodyParser = require('body-parser')
 const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomById, getRoomInfoById} = require('../chatquery')
 
 // mainquery 호출
-const query = require('../mainquery')
+const {getAllData} = require('../mainquery')
 
 const router = express.Router()
 
@@ -34,27 +34,6 @@ router.use(bodyParser.json())
 
 router.use(bodyParser.urlencoded({ extended: false }))
 
-router.use(cors({
-  origin: process.env.TARGET_ORIGIN
-}))
-
-// 룸을 생성하는 것
-//
-router.post('/', (req, res) => {
-  createRoom(req.body)
-    .then(roomId => {
-      if (roomId) {
-        res.json(roomId)
-        // getRoomInfoById({chat_room_id: room.id})
-        //   .then(info => {
-        //     res.json(info)
-        //   })
-      } else {
-        res.status(404).send('Room Not Found')
-      }
-    })
-})
-
 // 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 router.get('/', (req, res) => {
   let id, like
@@ -75,9 +54,29 @@ router.get('/', (req, res) => {
     lastLike: req.query.lastLike,
     lastId: req.query.lastId
   }
-  query.getAllData(data)
+  getAllData(data)
     .limit(6)
     .then(list => res.send(list))
+})
+
+// 룸 생성
+router.post('/', (req, res) => {
+  const {name, description, start_at, photo, creator, city_id} = req.body
+
+  // 필수조건이 하나라도 만족되지 않았을 경우 400 리턴 
+  if(!name || !description || !start_at || !creator || !city_id) {
+    return res.status(400).send('Bad Request')
+  }
+
+  createRoom(req.body)
+    .then(roomId => {
+      if (roomId) {
+        res.json(roomId)
+      } else {
+        // 타입에러? 
+        res.status(400).send('Bad Request')
+      }
+    })
 })
 
 router.get('/ids', (req, res) => {
@@ -89,9 +88,17 @@ router.get('/ids', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  findOrCreateChatList({chat_room_id: req.params.id, user_id: req.user.id})
+  const chat_room_id = req.params.id
+  const user_id = req.user.id
+
+  // chat_room_id가 숫자가 아닐경우 400 리턴
+  if(typeof chat_room_id !== 'number') {
+    return res.status(400).send('Bad Request')
+  }
+
+  findOrCreateChatList({chat_room_id, user_id})
     .then(() =>{
-      getRoomById(req.params.id)
+      getRoomById(user_id)
       .then(room => {
         if (room) {
           getRoomInfoById({chat_room_id: room.id})
@@ -99,6 +106,7 @@ router.get('/:id', (req, res) => {
               res.json(info)
             })
         } else {
+          // 요청하는 방이 존재하지 않을 경우 404 리턴 
           res.status(404).send('Room Not Found')
         }
       })

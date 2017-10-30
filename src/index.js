@@ -8,7 +8,6 @@ const authRouter = require('./router/auth')
 const loginRouter = require('./router/login')
 const roomsRouter = require('./router/room')
 const profileRouter = require('./router/profile')
-const mainRouter = require('./router/main')
 const chatConnect = require('./router/chat')
 
 const app = express()
