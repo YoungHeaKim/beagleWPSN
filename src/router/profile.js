@@ -3,7 +3,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const expressJwt = require('express-jwt')
 
-const { getRoomsById, checkCreatorById, exitRoom, modifyUserInfoById, findNextCreator, deleteRoom, updateCreator, selectUserByRoom, selectCreator } = require('../profilequery')
+const { getRoomsById, checkCreatorById, exitRoom, modifyUserInfoById, findNextCreator, deleteRoom, 
+        updateCreator, selectUserByRoom, selectCreator, updateLikeById, getRoomsByUserId } = require('../profilequery')
 const {getUserById} = require('../authquery')
 
 const router = express.Router()
@@ -47,6 +48,21 @@ router.get('/nickname', (req, res, next) => {
   modifyUserInfoById(user_id, nickname)
     .then(result => {
       res.json(result)
+    })
+})
+
+// 임시로 놔둠
+router.get('/rooms', (req, res) => {
+  getRoomsByUserId(req.user.id)
+    .then(result => {
+      res.json(result)
+    })
+})
+
+router.put('/like', (req, res) => {
+  updateLikeById(req.user.id)
+    .then(like => {
+      res.json({ok: true})
     })
 })
 
