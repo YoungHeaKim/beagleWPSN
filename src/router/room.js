@@ -17,9 +17,9 @@ router.use(cors({
   origin: process.env.TARGET_ORIGIN
 }))
 
-router.use(expressJwt({
+const jwtMiddleware = expressJwt({
   secret: process.env.SECRET
-}))
+})
 
 // JWT 토큰 확인 - 경로 진입시
 router.use((req, res, next) => {
@@ -60,7 +60,7 @@ router.get('/', (req, res) => {
 })
 
 // 룸 생성
-router.post('/', (req, res) => {
+router.post('/', jwtMiddleware, (req, res) => {
   const {name, description, start_at, photo, creator, city_id} = req.body
 
   // 필수조건이 하나라도 만족되지 않았을 경우 400 리턴 
@@ -79,7 +79,7 @@ router.post('/', (req, res) => {
     })
 })
 
-router.get('/ids', (req, res) => {
+router.get('/ids', jwtMiddleware, (req, res) => {
   findRoomsIdByUserId(req.user.id)
     .then(ids => {
       res.json(ids)
@@ -87,7 +87,7 @@ router.get('/ids', (req, res) => {
     .catch(e => res.status(404).send('Room Ids Not Found'))
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', jwtMiddleware, (req, res) => {
   const chat_room_id = req.params.id
   const user_id = req.user.id
 
