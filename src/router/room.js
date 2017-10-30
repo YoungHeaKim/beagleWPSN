@@ -3,13 +3,19 @@ const expressJwt = require('express-jwt')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-// 기능별로 나눌것 
-
+// 기능별로 나눌것
 const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomById, getRoomInfoById} = require('../chatquery')
+
+// mainquery 호출
+const query = require('../mainquery')
 
 const router = express.Router()
 
 router.options('*', cors())
+
+router.use(cors({
+  origin: process.env.TARGET_ORIGIN
+}))
 
 router.use(expressJwt({
   secret: process.env.SECRET
@@ -33,7 +39,7 @@ router.use(cors({
 }))
 
 // 룸을 생성하는 것
-// 
+//
 router.post('/', (req, res) => {
   createRoom(req.body)
     .then(roomId => {
@@ -47,6 +53,31 @@ router.post('/', (req, res) => {
         res.status(404).send('Room Not Found')
       }
     })
+})
+
+// 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
+router.get('/', (req, res) => {
+  let id, like
+
+  if('like' === req.query.sort){
+    like = req.query.sort
+    id = null
+  }else if('latest' === req.query.sort){
+    like = null
+    id = req.query.sort
+  }
+
+  let data = {
+    city_id: req.query.city_id,
+    start_at: req.query.start_at,
+    like: like,
+    id: id,
+    lastLike: req.query.lastLike,
+    lastId: req.query.lastId
+  }
+  query.getAllData(data)
+    .limit(6)
+    .then(list => res.send(list))
 })
 
 router.get('/ids', (req, res) => {
