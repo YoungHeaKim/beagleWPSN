@@ -110,10 +110,11 @@ router.post('/', jwtMiddleware, (req, res) => {
     .then(roomId => {
       if (roomId) {
         res.json(roomId)
-      } else {
-        // 타입에러?
-        res.status(400).send('Bad Request')
       }
+    })
+    .catch(e => {
+      // 모든 필요요소가 있지만 타입이 일치하지 않을 경우 
+      res.status(400).send(e.message)
     })
 })
 
@@ -136,7 +137,7 @@ router.get('/:id', jwtMiddleware, (req, res) => {
 
   findOrCreateChatList({chat_room_id, user_id})
     .then(() =>{
-      getRoomById(user_id)
+      getRoomById(chat_room_id)
       .then(room => {
         if (room) {
           getRoomInfoById({chat_room_id: room.id})
