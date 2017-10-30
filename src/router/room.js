@@ -22,13 +22,12 @@ const jwtMiddleware = expressJwt({
 })
 
 // JWT 토큰 확인 - 경로 진입시
-router.use((req, res, next) => {
-  console.log(req.user.id)
-  if(!req.user.id) {
-    res.redirect('/')
-  }
-   next()
-})
+// router.use((req, res, next) => {
+//   if(!req.user.id) {
+//     res.redirect('/')
+//   }
+//    next()
+// })
 
 router.use(bodyParser.json())
 
