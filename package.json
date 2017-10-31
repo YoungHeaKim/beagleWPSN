@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "nodemon --inspect src/index.js"
+    "test": "mocha",
+    "debug": "nodemon --inspect src/index.js",
+    "apidoc": "apidoc -i src/router -o docs",
+    "start": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -38,7 +40,11 @@
     "socketio-jwt": "^4.5.0"
   },
   "devDependencies": {
+    "apidoc": "^0.17.6",
+    "chai": "^4.1.2",
     "faker": "^4.1.0",
-    "nodemon": "^1.12.1"
+    "mocha": "^4.0.1",
+    "nodemon": "^1.12.1",
+    "supertest": "^3.0.0"
   }
 }

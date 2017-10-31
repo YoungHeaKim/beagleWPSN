@@ -26,7 +26,6 @@ module.exports = {
             chat_room_id: id
           })
           .then(user => {
-            console.log(user)
             return id
           })
       })
@@ -35,6 +34,9 @@ module.exports = {
           .where({id})
           .select('id')
           .first()
+      })
+      .catch(e => {
+        throw new Error('타입이 일치하지 않습니다.')
       })
   },
   // 룸 정보를 가져온다.
@@ -46,9 +48,6 @@ module.exports = {
   },
   // 앞단으로 보내야 하는 모든 정보를 합한다. 둘로 나눌까?
   getRoomInfoById({chat_room_id}) {
-    // 3번 
-    // 방장유저정보, 참여한 사람정보, 채팅로그, 임시 테이블 사용 
-    // innerjoin 사용(채팅방정보 -> 사람정보, 채팅로그)
 
     const getChatListById = knex('chat_list')
         .select('user_id', 'chat_room_id','nickname', 'profile_photo', 'like')
@@ -59,10 +58,8 @@ module.exports = {
         .where({id: chat_room_id})
         .first()
     
-        // getChatLogById를 제외한 상태 
     return Promise.all([getChatListById, getARoomById])
   },
-  // chat list에 이미 유저가 존재할 경우 그 값을 반환, 아닌 경우 유저를 추가함 2번 
   findOrCreateChatList({chat_room_id, user_id}) {
     return knex('chat_list')
       .where({

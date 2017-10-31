@@ -6,7 +6,7 @@ module.exports = {
     return knex('user')
       .join('chat_room', 'chat_room.creator', 'user.id')
       .join('city', 'chat_room.city_id', 'city.id')
-      .select('chat_room.city_id', 'chat_room.id', 'user.id as initUserId', 'city.id as initCityId', 'chat_room.name', 'chat_room.description',  'chat_room.photo', 'user.nickname', knex.raw("DATE_FORMAT(chat_room.start_at, '%Y-%m-%d') as start_at"), 'user.profile_photo', 'user.like', 'city.city_name', 'city.city_photo')
+      .select('chat_room.city_id', 'chat_room.id', 'user.id as initUserId', 'chat_room.name', 'chat_room.description',  'chat_room.photo', 'user.nickname', knex.raw("DATE_FORMAT(chat_room.start_at, '%Y-%m-%d') as start_at"), 'user.profile_photo', 'user.like', 'city.city_name', 'city.city_photo')
   },
   // city_id 또는 start_at data가 있으면 실행하는 쿼리
   getCityStartData({city_id, start_at}){

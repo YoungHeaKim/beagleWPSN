@@ -1,5 +1,6 @@
 // profilequery.js
 const knex = require('./knex.js')
+const {getRoomInfoById} = require('./chatquery')
 
 module.exports = {
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리
@@ -92,4 +93,29 @@ module.exports = {
       .where({chat_room_id: chatRoom})
       .orderBy('like', 'desc')
   },
+  updateLikeById(id) {
+    return knex('user')
+      .where({id})
+      .first()
+      .then(user => {
+        const newLike = user.like + 1
+
+        return knex('user')
+          .where({id: user.id})
+          .update({like: newLike})
+      })
+  },
+  getRoomsByUserId(id) {
+    return knex('chat_list')
+      .where({user_id: id})
+      .then(rooms => {
+        const arr = []
+
+        rooms.map(room => {
+          arr.push(getRoomInfoById({chat_room_id: room.chat_room_id}))
+        })
+
+        return Promise.all(arr)
+      })
+  }
 }
