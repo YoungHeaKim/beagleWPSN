@@ -3,7 +3,7 @@ const faker = require('faker')
 const cities = [
   {city_name: 'Kyoto', city_photo: faker.image.city()},
   {city_name: 'Jeju Island', city_photo: faker.image.city()},
-  {city_name: 'Parais', city_photo: faker.image.city()},
+  {city_name: 'Paris', city_photo: faker.image.city()},
   {city_name: 'Bangkok', city_photo: faker.image.city()},
   {city_name: 'London', city_photo: faker.image.city()},
   {city_name: 'Tokyo', city_photo: faker.image.city()},

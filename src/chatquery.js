@@ -26,30 +26,24 @@ module.exports = {
             chat_room_id: id
           })
           .then(user => {
-            console.log(user)
             return id
           })
       })
       .then(id => {
         return knex('chat_room')
           .where({id})
+          .select('id')
           .first()
       })
-  },
-  // 룸 정보를 가져온다. *유저정보가 들어있는지 확인하고 아니면 추가한다.*!!!!!!!!!!!!!!
-  getRoomById(id) {
-    // 1번
-    return knex('chat_room')  
-      .where({id})
-      .first()
+      .catch(e => {
+        throw new Error('타입이 일치하지 않습니다.')
+      })
   },
   // 앞단으로 보내야 하는 모든 정보를 합한다. 둘로 나눌까?
   getRoomInfoById({chat_room_id}) {
-    // 3번 
-    // 방장유저정보, 참여한 사람정보, 채팅로그, 임시 테이블 사용 
-    // innerjoin 사용(채팅방정보 -> 사람정보, 채팅로그)
 
     const getChatListById = knex('chat_list')
+        .select('user_id', 'chat_room_id','nickname', 'profile_photo', 'like')
         .join('user', 'user.id', 'chat_list.user_id')
         .where('chat_list.chat_room_id', chat_room_id)
 
@@ -57,10 +51,8 @@ module.exports = {
         .where({id: chat_room_id})
         .first()
     
-        // getChatLogById를 제외한 상태 
     return Promise.all([getChatListById, getARoomById])
   },
-  // chat list에 이미 유저가 존재할 경우 그 값을 반환, 아닌 경우 유저를 추가함 2번 
   findOrCreateChatList({chat_room_id, user_id}) {
     return knex('chat_list')
       .where({
@@ -78,6 +70,9 @@ module.exports = {
               user_id
             })
         }
+      })
+      .catch(e => {
+        throw new Error('존재하는 방이 아닙니다.')
       })
   },
   // 새로운 채팅로그를 생성한다.
@@ -109,4 +104,9 @@ module.exports = {
       .orderBy('id', 'desc')
       .limit(7)
   },
+  findRoomsIdByUserId(user_id) {
+    return knex('chat_list')
+      .select('chat_room_id')
+      .where({user_id})
+  }
 }

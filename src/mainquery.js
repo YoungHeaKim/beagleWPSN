@@ -1,55 +1,51 @@
 const knex = require('./knex')
 
 module.exports = {
+  // user, chat_room, city table을 연결하는 코드
   getAllRoomList () {
     return knex('user')
       .join('chat_room', 'chat_room.creator', 'user.id')
       .join('city', 'chat_room.city_id', 'city.id')
+      .select('chat_room.city_id', 'chat_room.id', 'user.id as initUserId', 'chat_room.name', 'chat_room.description',  'chat_room.photo', 'user.nickname', knex.raw("DATE_FORMAT(chat_room.start_at, '%Y-%m-%d') as start_at"), 'user.profile_photo', 'user.like', 'city.city_name', 'city.city_photo')
   },
-  getDataRoomList ({city_id, start_at, like, id}) {
+  // city_id 또는 start_at data가 있으면 실행하는 쿼리
+  getCityStartData({city_id, start_at}){
     let query = this.getAllRoomList()
-    if(city_id && start_at){
-      if(like){
-        query = query.where({city_id, start_at})
-        query = query.orderBy('like', 'id', 'desc')
-      }else if(id){
-        query = query.where({city_id, start_at})
-        query = query.orderBy('id', 'desc')
+    if(city_id){
+      query.where({city_id})
+      if(start_at){
+        query.where({start_at})
       }
     }
-    else if (city_id) {
-      if(like){
-        query = query.where({city_id})
-        query = query.orderBy('like', 'id', 'desc')
+    if(start_at){
+      query.where({start_at})
+      if(city_id){
+        query.where({city_id})
       }
-      else if(id){
-        query = query.where({city_id})
-        query = query.orderBy('id', 'desc')
-      }
-    }else if (start_at) {
-      if(like){
-        query = query.where({start_at})
-        query = query.orderBy('like', 'id', 'desc')
-      }
-      else if(id){
-        query = query.where({start_at})
-        query = query.orderBy('id', 'desc')
-      }
-    }else if(like){
-      query = query.orderBy('like', 'id', 'desc')
+    }
+    return query
+  },
+  // like 또는 id가 있으면 실행되는 쿼리
+  // city_id와 start_at이 있는지 먼저 확인 후 like 또는 id가 있으면 실행되도록 함.
+  getLikeOrIdData({like, id, ...others}){
+    let query = this.getCityStartData(others)
+    if(like){
+      query.orderBy('like', 'desc')
+        .orderBy('chat_room.id', 'desc')
     }else if(id){
-      query = query.orderBy('id', 'desc')
+      query.orderBy('chat_room.id', 'desc')
     }else {
       query.orderBy('chat_room.id', 'desc')
     }
     return query
-      .select('chat_room.id', 'chat_room.name', 'chat_room.description', 'chat_room.start_at', 'chat_room.photo', 'user.nickname', 'user.profile_photo', 'user.like', 'city.city_name', 'city.city_photo')
   },
-  getIdLikeData({lastId, lastLike}){
-    let query = this.getAllRoomList()
-    if(lastLike && lastId){
-      query = query.andWhere('like', '<', lastLike)
-      query = query.andWhere('id', '<', lastId)
+  // data가 들어온다면 실행되도록 함.
+  getAllData({lastId, lastLike, ...others}){
+    let query = this.getLikeOrIdData(others)
+        lastId = parseInt(lastId)
+        lastLike = parseInt(lastLike)
+    if(lastId){
+      query.andWhere('chat_room.id', '<', lastId)
     }
     return query
   }
