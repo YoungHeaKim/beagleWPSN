@@ -4,7 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 
 // 기능별로 나눌것
-const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomById, getRoomInfoById} = require('../chatquery')
+const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
 
 // mainquery 호출
 const query = require('../mainquery')
@@ -127,28 +127,24 @@ router.get('/ids', jwtMiddleware, (req, res) => {
 })
 
 router.get('/:id', jwtMiddleware, (req, res) => {
-  const chat_room_id = req.params.id
+  const chat_room_id = parseInt(req.params.id)
   const user_id = req.user.id
 
   // chat_room_id가 숫자가 아닐경우 400 리턴
-  // if(typeof chat_room_id !== 'number') {
-  //   return res.status(400).send('Bad Request')
-  // }
+  if(isNaN(chat_room_id)) {
+    return res.status(400).send('Bad Request')
+  }
 
   findOrCreateChatList({chat_room_id, user_id})
     .then(() =>{
-      getRoomById(chat_room_id)
-      .then(room => {
-        if (room) {
-          getRoomInfoById({chat_room_id: room.id})
-            .then(info => {
-              res.json(info)
-            })
-        } else {
-          // 요청하는 방이 존재하지 않을 경우 404 리턴
-          res.status(404).send('Room Not Found')
-        }
+      getRoomInfoById({chat_room_id})
+      .then(info => {
+        res.json(info)
       })
+    })
+    .catch(e => {
+      // 요청하는 방이 존재하지 않을 경우 404 리턴
+      res.status(404).send(e.message)
     })
 })
 
