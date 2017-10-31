@@ -31,11 +31,11 @@ module.exports = {
     let query = this.getCityStartData(others)
     if(like){
       query.orderBy('like', 'desc')
-        .orderBy('chat_room.id', 'desc')
+        .orderBy('id', 'desc')
     }else if(id){
-      query.orderBy('chat_room.id', 'desc')
+      query.orderBy('id', 'desc')
     }else {
-      query.orderBy('chat_room.id', 'desc')
+      query.orderBy('id', 'desc')
     }
     return query
   },
@@ -45,7 +45,7 @@ module.exports = {
         lastId = parseInt(lastId)
         lastLike = parseInt(lastLike)
     if(lastId){
-      query.andWhere('chat_room.id', '<', lastId)
+      query.andWhere('id', '<', lastId)
     }
     return query
   }
