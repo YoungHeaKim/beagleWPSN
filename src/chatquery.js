@@ -39,13 +39,6 @@ module.exports = {
         throw new Error('타입이 일치하지 않습니다.')
       })
   },
-  // 룸 정보를 가져온다.
-  getRoomById(id) {
-    // 1번
-    return knex('chat_room')  
-      .where({id})
-      .first()
-  },
   // 앞단으로 보내야 하는 모든 정보를 합한다. 둘로 나눌까?
   getRoomInfoById({chat_room_id}) {
 
@@ -77,6 +70,9 @@ module.exports = {
               user_id
             })
         }
+      })
+      .catch(e => {
+        throw new Error('존재하는 방이 아닙니다.')
       })
   },
   // 새로운 채팅로그를 생성한다.
