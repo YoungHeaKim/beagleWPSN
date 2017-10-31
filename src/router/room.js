@@ -4,7 +4,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 
 // 기능별로 나눌것
-const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
+const {createLog, createRoom, findOrCreateChatList,getRoomInfoById} = require('../chatquery')
 
 // mainquery 호출
 const query = require('../mainquery')
@@ -116,14 +116,6 @@ router.post('/', jwtMiddleware, (req, res) => {
       // 모든 필요요소가 있지만 타입이 일치하지 않을 경우 
       res.status(400).send(e.message)
     })
-})
-
-router.get('/ids', jwtMiddleware, (req, res) => {
-  findRoomsIdByUserId(req.user.id)
-    .then(ids => {
-      res.json(ids)
-    })
-    .catch(e => res.status(404).send('Room Ids Not Found'))
 })
 
 router.get('/:id', jwtMiddleware, (req, res) => {
