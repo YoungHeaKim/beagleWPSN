@@ -103,10 +103,5 @@ module.exports = {
       .where({chat_room_id})
       .orderBy('id', 'desc')
       .limit(7)
-  },
-  findRoomsIdByUserId(user_id) {
-    return knex('chat_list')
-      .select('chat_room_id')
-      .where({user_id})
   }
 }

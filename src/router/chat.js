@@ -3,7 +3,7 @@ const {createLog, getNicknameAndPhotoById, getFirstLogs, getLogs} = require('../
 const {getUserById} = require('../authquery')
 
 function chatConnect(io) {
-  io.set('origins', process.env.TARGET_ORIGIN);
+  io.set('origins', '*:*');
 
   const chatNsp = io.of('/chat')
 
