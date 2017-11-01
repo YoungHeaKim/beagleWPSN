@@ -39,20 +39,24 @@ router.use(bodyParser.urlencoded({ extended: false }))
  * @apiName Default list
  * @apiGroup chat-rooms
  *
- * @apiParam
+ * @apiParam {Integer} city_id 도시의 id 구분번호
+ * @apiParam {Date} start_at 여행 출발 일자
+ * @apiParam {String} sort like 또는 latest
+ * @apiParam {Integer} lastLike 마지막 응답의 like 개수
+ * @apiParam {Integer} lastId 마지막 응답의 Id 번호
  *
  * @apiSuccess {Integer} city_id 도시의 id 구분번호
  * @apiSuccess {Integer} id Chat-room의 고유 방 번호
  * @apiSuccess {Integer} initUserId User의 고유 번호
  * @apiSuccess {String} name 채팅방 제목
  * @apiSuccess {String} description 채팅방 설명
- * @apiSuccess {Url} photo 채팅방 이미지
+ * @apiSuccess {String} photo 채팅방 이미지
  * @apiSuccess {String} nickname User의 닉네임
  * @apiSuccess {Date} start_at 여행 출발 일자
- * @apiSuccess {Url} profile_photo User의 프로필 사진
+ * @apiSuccess {String} profile_photo User의 프로필 사진
  * @apiSuccess {Integer} like User의 좋아요(인기)
  * @apiSuccess {String} city_name 도시의 이름
- * @apiSuccess {Url} city_photo 도시의 이미지
+ * @apiSuccess {String} city_photo 도시의 이미지
  *
  * @apiSuccessExample {json} Success-Response:
  * http://localhost:3030/api/chat-rooms
@@ -61,8 +65,8 @@ router.use(bodyParser.urlencoded({ extended: false }))
  *    "city_id": 15,
  *    "id": 10016,
  *    "initUserId": 4,
- *    "name": "아니한다.",
- *    "description": "정한다. 재외국민을 정하는 또는 국민은 효력을 비밀과 의하여. 구성하지 청구할 국내법과.",
+ *    "name": "LA로 여행 가시는분~",
+ *    "description": "16년 8월 31일 할리우드 가실분 찾아요~",
  *    "photo": "http://lorempixel.com/640/480/city",
  *    "nickname": "김정원",
  *    "start_at": "2016-08-31",
@@ -113,7 +117,7 @@ router.post('/', jwtMiddleware, (req, res) => {
       }
     })
     .catch(e => {
-      // 모든 필요요소가 있지만 타입이 일치하지 않을 경우 
+      // 모든 필요요소가 있지만 타입이 일치하지 않을 경우
       res.status(400).send(e.message)
     })
 })
