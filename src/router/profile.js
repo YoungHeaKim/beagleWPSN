@@ -108,7 +108,7 @@ router.delete('/chatList/:id', (req, res) => {
 
   query.exitRoom(userId, chatRoomId)
     .then(result => {
-      res.json({ok: true})
+      res.json({id: chatRoomId})
     })
     .catch(e => {
       res.status(404).send(e.message)
@@ -125,6 +125,7 @@ router.delete('/chatRooms/:id', (req, res) => {
 
   query.getARoomByRoomId(chatRoomId)
     .then(room => {
+      
       // room이 undefined일 경우 
       if(!room) {
         return res.status(404).send('Not Found')
