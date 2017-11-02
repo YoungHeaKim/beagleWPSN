@@ -49,6 +49,9 @@ module.exports = {
     return knex('chat_list')
       .where({user_id, chat_room_id})
       .del()
+      .catch(e => {
+        throw new Error('해당 방에 해당 유저가 존재하지 않습니다.')
+      })
   },
   // 해당유저가 한명만 있을 경우 채팅방을 삭제하는 코드
   deleteRoom(chat_room_id) {
@@ -93,18 +96,6 @@ module.exports = {
       .where({chat_room_id: chatRoom})
       .orderBy('like', 'desc')
   },
-  updateLikeById(id) {
-    return knex('user')
-      .where({id})
-      .first()
-      .then(user => {
-        const newLike = user.like + 1
-
-        return knex('user')
-          .where({id: user.id})
-          .update({like: newLike})
-      })
-  },
   getRoomsByUserId(id) {
     return knex('chat_list')
       .where({user_id: id})
@@ -117,5 +108,10 @@ module.exports = {
 
         return Promise.all(arr)
       })
-  }
+  },
+  getARoomByRoomId(id) {
+    return knex('chat_room')
+      .where({id})
+      .first()
+  },
 }

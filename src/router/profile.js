@@ -1,25 +1,19 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const cors = require('cors')
-const expressJwt = require('express-jwt')
+
+const mw = require('../middleware')
 
 const query = require('../profilequery')
-
 const {getUserById} = require('../authquery')
 
 const router = express.Router()
 
-router.use(expressJwt({
-  secret: process.env.SECRET
-}))
-router.use(bodyParser.json())
+router.options('*', cors())
 
-router.use(bodyParser.urlencoded({ extended: false }))
-
-// cors오류 문제 해결해주는 코드
-router.use(cors({
-  origin: process.env.TARGET_ORIGIN
-}))
+router.use(mw.jwtMiddleware)
+router.use(mw.corsMiddleware)
+router.use(mw.bodyParserJsonMiddleware)
+router.use(mw.bodyParserUrlEncodedMiddleware)
 
 // 로그인이 되어있는 유저 정보를 가져와야한다.
 // 로그인이 되어있는 유저가 들어가있는 방 정보를 가져온다.
@@ -70,13 +64,6 @@ router.get('/rooms', (req, res) => {
     })
 })
 
-router.put('/like', (req, res) => {
-  query.updateLikeById(req.user.id)
-    .then(like => {
-      res.json({ok: true})
-    })
-})
-
 // 삭제 부분
 router.delete('/delete/:room_id', (req, res) => {
   const user_id = req.user.id
@@ -110,4 +97,48 @@ router.delete('/delete/:room_id', (req, res) => {
         }
     })
 })
+
+router.delete('/chatList/:id', (req, res) => {
+  const userId = req.user.id
+  const chatRoomId = parseInt(req.params.id)
+  // id가 숫자가 아닐 경우 
+  if(isNaN(chatRoomId)) {
+    return res.status(400).send('Bad Request')
+  }
+
+  query.exitRoom(userId, chatRoomId)
+    .then(result => {
+      res.json({ok: true})
+    })
+    .catch(e => {
+      res.status(404).send(e.message)
+    })
+  
+})
+
+router.delete('/chatRooms/:id', (req, res) => {
+  const chatRoomId = parseInt(req.params.id)
+  // id가 숫자가 아닐 경우 
+  if(isNaN(chatRoomId)) {
+    return res.status(400).send('Bad Request')
+  }
+
+  query.getARoomByRoomId(chatRoomId)
+    .then(room => {
+      // room이 undefined일 경우 
+      if(!room) {
+        return res.status(404).send('Not Found')
+      }
+      // creator가 아닐경우 권한이 없음을 표시
+      if(room.creator !== req.user.id) {
+        return res.status(403).send('Forbidden')
+      }
+
+      return query.deleteRoom(room.id)
+    })
+    .then(result => {
+      res.json({id: chatRoomId})
+    })
+})
+
 module.exports = router
