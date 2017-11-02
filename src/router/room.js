@@ -1,8 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 
-const {createLog, createRoom, findOrCreateChatList,getRoomInfoById} = require('../chatquery')
-
+const {createLog, createRoom, findOrCreateChatList,getRoomInfoById, updateLikeByRoomId} = require('../chatquery')
 // mainquery 호출
 const query = require('../mainquery')
 const mw = require('../middleware')
@@ -121,6 +120,17 @@ router.get('/:id', mw.jwtMiddleware, (req, res) => {
     })
     .catch(e => {
       // 요청하는 방이 존재하지 않을 경우 404 리턴
+      res.status(404).send(e.message)
+    })
+})
+
+// creator에 하트부여 
+router.patch('/:id/like', (req, res) => {
+  updateLikeByRoomId(req.params.id)
+    .then(like => {
+      res.json({ok: true})
+    })
+    .catch(e => {
       res.status(404).send(e.message)
     })
 })
