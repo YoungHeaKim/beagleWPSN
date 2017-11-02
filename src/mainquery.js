@@ -44,8 +44,14 @@ module.exports = {
     let query = this.getLikeOrIdData(others)
         lastId = parseInt(lastId)
         lastLike = parseInt(lastLike)
-    if(lastId){
-      query.andWhere('chat_room.id', '<', lastId)
+    if(lastId && lastLike){
+      query.where(function(){
+        this.where(
+          function() {
+          this.where('like', lastLike).andWhere('chat_room.id', '<', lastId)
+        })
+        .orWhere('like', '<', lastLike)
+      })
     }
     return query
   }
