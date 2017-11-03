@@ -76,7 +76,7 @@ router.get('/', (req, res) => {
     lastLike: req.query.lastLike,
     lastId: req.query.lastId
   }
-  query.getAllData(data)
+  query.getMainQueryFilterData(data)
     .limit(6)
     .then(list => res.send(list))
 })
@@ -124,7 +124,7 @@ router.get('/:id', mw.jwtMiddleware, (req, res) => {
     })
 })
 
-// creator에 하트부여 
+// creator에 하트부여
 router.patch('/:id/like', (req, res) => {
   updateLikeByRoomId(req.params.id)
     .then(like => {
