@@ -1,35 +1,18 @@
 const express = require('express')
-const expressJwt = require('express-jwt')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
 
 const query = require('../mainquery')
+const mw = require('../middleware')
 
 const router = express.Router()
 
 router.options('*', cors())
-
-router.use(cors({
-  origin: process.env.TARGET_ORIGIN
-}))
-
-const jwtMiddleware = expressJwt({
-  secret: process.env.SECRET
-})
-
-// JWT 토큰 확인 - 경로 진입시
-// router.use((req, res, next) => {
-//   if(!req.user.id) {
-//     res.redirect('/')
-//   }
-//    next()
-// })
-
-router.use(bodyParser.json())
-
-router.use(bodyParser.urlencoded({ extended: false }))
+router.use(mw.corsMiddleware)
+router.use(mw.bodyParserJsonMiddleware)
+router.use(mw.bodyParserUrlEncodedMiddleware)
 
 /**
  * @api {get} /api/chat-rooms Request Room List
@@ -99,7 +82,7 @@ router.get('/', (req, res) => {
 })
 
 // 룸 생성
-router.post('/', jwtMiddleware, (req, res) => {
+router.post('/', mw.jwtMiddleware, (req, res) => {
   const {name, description, start_at, photo, creator, city_id} = req.body
 
   // 필수조건이 하나라도 만족되지 않았을 경우 400 리턴
@@ -119,15 +102,7 @@ router.post('/', jwtMiddleware, (req, res) => {
     })
 })
 
-router.get('/ids', jwtMiddleware, (req, res) => {
-  findRoomsIdByUserId(req.user.id)
-    .then(ids => {
-      res.json(ids)
-    })
-    .catch(e => res.status(404).send('Room Ids Not Found'))
-})
-
-router.get('/:id', jwtMiddleware, (req, res) => {
+router.get('/:id', mw.jwtMiddleware, (req, res) => {
   const chat_room_id = parseInt(req.params.id)
   const user_id = req.user.id
 
@@ -145,6 +120,17 @@ router.get('/:id', jwtMiddleware, (req, res) => {
     })
     .catch(e => {
       // 요청하는 방이 존재하지 않을 경우 404 리턴
+      res.status(404).send(e.message)
+    })
+})
+
+// creator에 하트부여 
+router.patch('/:id/like', (req, res) => {
+  updateLikeByRoomId(req.params.id)
+    .then(like => {
+      res.json({ok: true})
+    })
+    .catch(e => {
       res.status(404).send(e.message)
     })
 })
