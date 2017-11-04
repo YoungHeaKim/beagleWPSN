@@ -1,8 +1,9 @@
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 
-const {createLog, createRoom, findOrCreateChatList,getRoomInfoById, updateLikeByRoomId} = require('../chatquery')
-// mainquery 호출
+const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
+
 const query = require('../mainquery')
 const mw = require('../middleware')
 
@@ -13,7 +14,6 @@ router.use(mw.corsMiddleware)
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
 
-// 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 /**
  * @api {get} /api/chat-rooms Request Room List
  * @apiName Default list
@@ -60,15 +60,15 @@ router.use(mw.bodyParserUrlEncodedMiddleware)
 router.get('/', (req, res) => {
   let id, like
 
-  if('like' === req.query.sort){
+  if ('like' === req.query.sort) {
     like = req.query.sort
     id = null
-  }else if('latest' === req.query.sort){
+  } else if ('latest' === req.query.sort) {
     like = null
     id = req.query.sort
   }
 
-  let data = {
+  const data = {
     city_id: req.query.city_id,
     start_at: req.query.start_at,
     like: like,
