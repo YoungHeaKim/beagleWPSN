@@ -10,7 +10,7 @@ module.exports = {
   },
   // city_id 또는 start_at data가 있으면 실행하는 쿼리
   getCityStartData({city_id, start_at}){
-    let query = this.getAllRoomList()
+    const query = this.getAllRoomList()
     if (city_id) {
       query.where({city_id})
       if (start_at) {
@@ -28,7 +28,7 @@ module.exports = {
   // like 또는 id가 있으면 실행되는 쿼리
   // city_id와 start_at이 있는지 먼저 확인 후 like 또는 id가 있으면 실행되도록 함.
   getLikeOrIdData({like, id, ...others}){
-    let query = this.getCityStartData(others)
+    const query = this.getCityStartData(others)
     if (like) {
       query.orderBy('like', 'desc')
         .orderBy('chat_room.id', 'desc')
@@ -41,7 +41,7 @@ module.exports = {
   },
   // data가 들어온다면 실행되도록 함.
   getAllData({lastId, lastLike, ...others}){
-    let query = this.getLikeOrIdData(others)
+    const query = this.getLikeOrIdData(others)
         lastId = parseInt(lastId)
         lastLike = parseInt(lastLike)
     if (lastId && lastLike != null) {
