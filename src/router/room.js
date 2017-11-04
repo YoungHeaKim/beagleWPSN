@@ -80,15 +80,15 @@ router.use(bodyParser.urlencoded({ extended: false }))
 router.get('/', (req, res) => {
   let id, like
 
-  if('like' === req.query.sort){
+  if ('like' === req.query.sort) {
     like = req.query.sort
     id = null
-  }else if('latest' === req.query.sort){
+  } else if ('latest' === req.query.sort) {
     like = null
     id = req.query.sort
   }
 
-  let data = {
+  const data = {
     city_id: req.query.city_id,
     start_at: req.query.start_at,
     like: like,
