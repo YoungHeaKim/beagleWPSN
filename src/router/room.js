@@ -3,10 +3,8 @@ const expressJwt = require('express-jwt')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-// 기능별로 나눌것
 const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
 
-// mainquery 호출
 const query = require('../mainquery')
 
 const router = express.Router()
@@ -33,7 +31,6 @@ router.use(bodyParser.json())
 
 router.use(bodyParser.urlencoded({ extended: false }))
 
-// 기본 페이지 리스트 및 필터링에 대한 요청이 들어오게 되면 필터링 된 결과 값을 보내준다.
 /**
  * @api {get} /api/chat-rooms Request Room List
  * @apiName Default list
