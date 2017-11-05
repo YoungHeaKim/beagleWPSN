@@ -73,7 +73,6 @@ module.exports = {
       .whereNot({user_id})
       .orderBy('chat_room_id', 'desc')
       .orderBy('like', 'desc')
-      .orderBy
       .first()
   },
   // 방장을 업데이트해주는 쿼리
@@ -92,7 +91,7 @@ module.exports = {
   getUserProfilePhotoByRoom(chatRoom) {
     return knex('chat_list')
       .join('user', 'user.id', 'chat_list.user_id')
-      .select('user.profile_photo', 'user.nickname', 'chat_room_id')
+      .select('user.id', 'user.like', 'user.profile_photo', 'user.nickname')
       .where({chat_room_id: chatRoom})
       .orderBy('like', 'desc')
   },
