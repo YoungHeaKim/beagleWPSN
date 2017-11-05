@@ -103,5 +103,26 @@ module.exports = {
       .where({chat_room_id})
       .orderBy('id', 'desc')
       .limit(7)
-  }
+  },
+  // roomid로 creator의 like 증가 
+  updateLikeByRoomId(id) {
+    return knex('chat_room')
+      .where({id})
+      .first()
+      .then(room => {
+        return knex('user')
+        .where({id: room.creator})
+        .first()
+      })
+      .then(user => {
+        const newLike = user.like + 1
+
+        return knex('user')
+          .where({id: user.id})
+          .update({like: newLike})
+      })
+      .catch(e => {
+        throw new Error('채팅방이나 해당 유저가 존재하지 않습니다.')
+      })
+  },
 }
