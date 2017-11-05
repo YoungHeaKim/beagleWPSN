@@ -1,5 +1,4 @@
-// profilequery.js
-const knex = require('./knex.js')
+const knex = require('../knex.js')
 const {getRoomInfoById} = require('./chatquery')
 
 module.exports = {

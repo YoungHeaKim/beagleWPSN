@@ -1,5 +1,5 @@
 // 불러오기
-const query = require('../authquery')
+const query = require('../query')
 // passport 작성
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy

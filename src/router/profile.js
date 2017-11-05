@@ -3,8 +3,7 @@ const cors = require('cors')
 
 const mw = require('../middleware')
 
-const query = require('../profilequery')
-const {getUserById} = require('../authquery')
+const query = require('../query')
 
 const router = express.Router()
 
@@ -93,7 +92,7 @@ router.get('/', (req, res, next) => {
   const currentUser = parseInt(req.query.id)
 
   // 해당방의 참여하고 있는 사람들의 프로필 사진만 보내주면 된다.
-  const userInfo = getUserById(currentUser)
+  const userInfo = query.getUserById(currentUser)
 
   // 여러개의 대화방을 가져올 수 있는 대화방 쿼리를 짜주어야한다.
   const roomInfo = query.getRoomsById(currentUser)
@@ -152,14 +151,6 @@ router.get('/rooms', (req, res) => {
   query.getRoomsByUserId(req.user.id)
     .then(result => {
       res.json(result)
-    })
-})
-
-
-router.put('/like', (req, res) => {
-  query.updateLikeById(req.user.id)
-    .then(like => {
-      res.json({ok: true})
     })
 })
 

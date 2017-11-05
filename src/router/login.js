@@ -4,7 +4,7 @@ const cors = require('cors')
 const mw = require('../middleware')
 
 // 파일 불러오기
-const query = require('../authquery')
+const query = require('../query')
 
 // express를 router로 실행한다.
 const router = express.Router()
