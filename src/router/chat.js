@@ -1,6 +1,5 @@
 const socketioJwt = require('socketio-jwt')
-const {createLog, getNicknameAndPhotoById, getFirstLogs, getLogs} = require('../chatquery')
-const {getUserById} = require('../authquery')
+const query = require('../query')
 
 function chatConnect(io) {
   // cors 세팅
@@ -27,7 +26,7 @@ function chatConnect(io) {
     let profile_photo;
     const id = socket.decoded_token.id
     // 새로 들어온 사람의 닉네임과 사진을 가져온다.
-    getNicknameAndPhotoById(id)
+    query.getNicknameAndPhotoById(id)
       .then(user => {
         nickname = user.nickname
         profile_photo = user.profile_photo
@@ -45,7 +44,7 @@ function chatConnect(io) {
       roomId = data.room
       socket.join(roomId)
       // 지난 로그를 가져와 클라이언트에 넘겨준다. 
-      getFirstLogs({chat_room_id: roomId})
+      query.getFirstLogs({chat_room_id: roomId})
         .then(logs => {
           ack({logs})
         })
@@ -59,7 +58,7 @@ function chatConnect(io) {
     socket.on('new chat', (data, ack) => {
 
       // 데이터베이스에 새로 생성된 로그를 저장 
-      createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
+      query.createLog({message: data.message, user_id: data.user_id, chat_room_id: roomId})
         .then(log => {
           // 로그가 성공적으로 들어왔음을 알려준다. 
           ack(log)
@@ -72,7 +71,7 @@ function chatConnect(io) {
     // id값을 받아서 진행한다. data.id 
     socket.on('log request', (data, ack) => {
       // 로그를 가져온다.
-      getLogs({chat_room_id: roomId, id: data.id})
+      query.getLogs({chat_room_id: roomId, id: data.id})
         .then(logs => {
           ack({logs})
         })

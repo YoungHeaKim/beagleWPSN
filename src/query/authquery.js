@@ -1,4 +1,4 @@
-const knex = require('./knex')
+const knex = require('../knex')
 
 module.exports = {
   firstOrCreateUserByProvider(provider, provider_user_id, nickname, access_token=null, profile_photo=null) {

@@ -1,4 +1,4 @@
-const knex = require('./knex')
+const knex = require('../knex')
 
 module.exports = {
 
@@ -39,7 +39,7 @@ module.exports = {
     return query
   },
 
-  getAllData({lastId, lastLike, ...others}) {
+  getMainQueryFilterData({lastId, lastLike, ...others}) {
     const query = this.getLikeOrIdData(others)
         lastId = parseInt(lastId)
         lastLike = parseInt(lastLike)

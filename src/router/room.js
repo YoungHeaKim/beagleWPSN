@@ -2,9 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 
-const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
-
-const query = require('../mainquery')
+const query = require('../query')
 const mw = require('../middleware')
 
 const router = express.Router()
@@ -90,7 +88,7 @@ router.post('/', mw.jwtMiddleware, (req, res) => {
     return res.status(400).send('Bad Request')
   }
 
-  createRoom(req.body)
+  query.createRoom(req.body)
     .then(roomId => {
       if (roomId) {
         res.json(roomId)
@@ -111,9 +109,9 @@ router.get('/:id', mw.jwtMiddleware, (req, res) => {
     return res.status(400).send('Bad Request')
   }
 
-  findOrCreateChatList({chat_room_id, user_id})
+  query.findOrCreateChatList({chat_room_id, user_id})
     .then(() =>{
-      getRoomInfoById({chat_room_id})
+      query.getRoomInfoById({chat_room_id})
       .then(info => {
         res.json(info)
       })
@@ -126,7 +124,7 @@ router.get('/:id', mw.jwtMiddleware, (req, res) => {
 
 // creator에 하트부여
 router.patch('/:id/like', (req, res) => {
-  updateLikeByRoomId(req.params.id)
+  query.updateLikeByRoomId(req.params.id)
     .then(like => {
       res.json({ok: true})
     })

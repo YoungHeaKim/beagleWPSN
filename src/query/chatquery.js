@@ -1,5 +1,4 @@
-// chatquery.js 
-const knex = require('./knex')
+const knex = require('../knex')
 
 module.exports = {
   getNicknameAndPhotoById(id) {
