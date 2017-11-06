@@ -58,8 +58,5 @@ typings/
 # dotenv environment variables file
 .env
 
-#temp
-test
-
 #api-doc
 docs
