@@ -1,13 +1,10 @@
 const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
 
 const query = require('../query')
 const mw = require('../middleware')
 
 const router = express.Router()
 
-router.options('*', cors())
 router.use(mw.corsMiddleware)
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
