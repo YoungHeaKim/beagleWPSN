@@ -1,6 +1,4 @@
 const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
 
 const {createLog, createRoom, findOrCreateChatList, findRoomsIdByUserId ,getRoomInfoById} = require('../chatquery')
 
@@ -9,7 +7,6 @@ const mw = require('../middleware')
 
 const router = express.Router()
 
-router.options('*', cors())
 router.use(mw.corsMiddleware)
 router.use(mw.bodyParserJsonMiddleware)
 router.use(mw.bodyParserUrlEncodedMiddleware)
