@@ -50,7 +50,7 @@ module.exports = {
           this.where('like', lastLike)
           .andWhere('chat_room.id', '<', lastId)
         })
-        .orWhere('like', '<', lastLike)
+        .orWhere('chat_room.id', '<', lastId)
       })
     }
     return query
