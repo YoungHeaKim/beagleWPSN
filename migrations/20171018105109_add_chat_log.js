@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = (knex, Promise) => {
   return knex.schema.createTable('chat_log', t => {
     t.increments()
     t.integer('user_id').unsigned().notNullable()
@@ -12,6 +12,6 @@ exports.up = function(knex, Promise) {
   })
 };
 
-exports.down = function(knex, Promise) {
+exports.down = (knex, Promise) => {
   return knex.schema.dropTable('chat_log')
 };

@@ -1,7 +1,7 @@
 const faker = require('faker')
 faker.locale = 'ko'
 
-exports.seed = function(knex, Promise) {
+exports.seed = (knex, Promise) => {
   return knex('chat_room')
   .then(() => {
     const arr = []

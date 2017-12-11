@@ -1,5 +1,5 @@
 
-exports.up = function(knex, Promise) {
+exports.up = (knex, Promise) => {
   return knex.schema.createTable('chat_list', t => {
     t.integer('user_id').unsigned().notNullable()
     t.foreign('user_id').references('user.id')
@@ -8,6 +8,6 @@ exports.up = function(knex, Promise) {
   })
 };
 
-exports.down = function(knex, Promise) {
+exports.down = (knex, Promise) => {
   return knex.schema.dropTable('chat_list')
 };

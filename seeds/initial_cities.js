@@ -21,7 +21,7 @@ const cities = [
   {city_name: 'Singapore'}
 ]
 
-exports.seed = function(knex, Promise) {
+exports.seed = (knex, Promise) => {
   // Deletes ALL existing entries
   return knex('city').del()
     .then(function () {
